@@ -12,7 +12,10 @@ flux-analysis: main.o analysis.o base.o
 #base.o:
 #	g++ -Wall -c main.cpp
 clean:
-	rm main.o flux-analysis analysis.o
+	rm main.o
+	rm flux-analysis
+	rm analysis.o 
+	rm base.o
 test1:
 	 ./flux-analysis --output-text textout.txt --fresh-input dataIPFAN-08122012.txt
 test2:

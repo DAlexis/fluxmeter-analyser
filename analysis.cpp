@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include "analysis.h"
+#include "base.h" 
 
 using namespace std;
 /*

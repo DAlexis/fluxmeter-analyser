@@ -3,9 +3,7 @@
 
 #include <string>
 
-using namespace std;
-
-double timeLen=24*3600;
+using namespace std; 
 
 class dataContainer {
 public:

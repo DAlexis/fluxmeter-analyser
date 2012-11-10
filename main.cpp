@@ -1,3 +1,5 @@
+// main.cpp
+
 #include <stdio.h>
 #include <string.h>
 #include <string>
@@ -7,22 +9,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-//string qqwewqeqwe;
-//#include "test.h"
-
 //#include "inpout.h"
 
 #include "base.h"
 #include "analysis.h"
 
-using namespace std;
+using namespace std; 
 
-long long dataLen=0;
-
-float E;
-
-class jobList {
-public:
+struct jobList {
 	bool need_average;
 	int average_range;
 	bool need_trunc;
@@ -44,18 +38,19 @@ public:
 	string pattern;
 	string output_strikes;
 	
-	jobList();
+	jobList(): need_binary_input(0), need_fresh_input(0), 
+				need_binary_out(0), need_text_out(0), need_average(0), 
+				need_trunc(0), need_rc(0), need_strikes(0) {};
 };
-
+/*
 jobList::jobList()
 {
-	need_binary_input=need_fresh_input=need_binary_out=need_text_out=need_average=need_trunc=need_rc=need_strikes=0;
 	binary_filename="";
 	pattern="";
 	output_binary_filename="";
 	output_text_filename="";
 	output_strikes="";
-}
+}*/
 
 /////////////////////////////////////////////////////////////////// main
 int main(int argc, char* argv[])

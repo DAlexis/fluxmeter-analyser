@@ -10,6 +10,8 @@ using namespace std;
 
 #define TEXT_BUFFER_SIZE	10000
 
+const double timeLen=24*3600;
+
 struct dataLine {
 	char time[8];
 	char comma1;

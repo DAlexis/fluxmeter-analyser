@@ -9,7 +9,7 @@ using namespace std;
 #define MAX_COND_LEN		100
 /*
 class pattern {
-private:
+private: 
 	float time[MAX_COND_LEN];
 	float dfdt[MAX_COND_LEN];
 	char cond[MAX_COND_LEN]; // <, >

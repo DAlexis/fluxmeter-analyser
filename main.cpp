@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
 				return -1;
 			}
 			job.need_strikes=1;
-			job.pattern=argv[argNum];
+			job.output_strikes=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
 		printf("Hm. I can\'t do anything without input file.\n");
 		return -3;
 	}
-	
+	pattern patt;
 	// Conversions
 	if (job.need_trunc) {
 		printf("Truncating data with range %d mesurings...\n", job.trunc_range);
@@ -214,7 +214,8 @@ int main(int argc, char* argv[])
 			return -2;
 		}
 		printf("Reading pattern from %s...\n", job.pattern.c_str());
-		
+		res=patt.readPattern(job.pattern);
+		if (res) return res;
 		printf("Done\n");
 	}	
 	if (job.need_binary_out) {

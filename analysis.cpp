@@ -4,9 +4,10 @@
 #include "base.h" 
 
 using namespace std;
-/*
+
 int pattern::readPattern(string filename)
 {
+	/*
 	FILE *input=fopen(filename.c_str(), "r");
 	if (!input) {
 		printf("Can\'t open output file %s for writeng!\n", filename.c_str());
@@ -24,13 +25,14 @@ int pattern::readPattern(string filename)
 	}
 	printf("Pattern with length of %d successfuly readed.\n", len);
 	fclose(input);
+	return 0;*/
 	return 0;
-}*/
-/*
+}
+
 bool pattern::check(dataContainer& E, long long index)
 {
 	return false;
-}*/
+}
 
 void truncData(dataContainer& E, int range)
 {

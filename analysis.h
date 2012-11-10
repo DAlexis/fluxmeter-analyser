@@ -7,7 +7,7 @@
 using namespace std;
 
 #define MAX_COND_LEN		100
-/*
+
 class pattern {
 private: 
 	float time[MAX_COND_LEN];
@@ -23,7 +23,7 @@ public:
 	bool check(dataContainer& E, long long index);
 	pattern(): len(0) {}
 	//pattern(float* newE): E(newE) {}
-};*/
+};
 
 void truncData(dataContainer& E, int range);
 void averageData(dataContainer& E, int range);

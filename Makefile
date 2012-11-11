@@ -16,8 +16,6 @@ clean:
 	rm flux-analysis
 	rm analysis.o 
 	rm base.o
-test1:
-	 ./flux-analysis --output-text textout.txt --fresh-input dataIPFAN-08122012.txt
-test2:
-	 ./flux-analysis --output-text textout.txt --trunc 1000 --fresh-input dataIPFAN-08122012.txt
+testPatt1:
+	./flux-analysis --pattern pattern1.txt --input-fresh dataIPFAN-08122012.txt --strikes-list strikes.txt
 	 

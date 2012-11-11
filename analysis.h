@@ -14,15 +14,16 @@ private:
 	float dfdt[MAX_COND_LEN];
 	char cond[MAX_COND_LEN]; // <, >
 	char sign[MAX_COND_LEN]; // s - same, d - different, e - every, +/-
-	char freq[MAX_COND_LEN]; // a - all the time, o - >=one time
-	int index[MAX_COND_LEN];
+	char strength[MAX_COND_LEN]; // a - all the time, o - >=one time
+	//int index[MAX_COND_LEN];
 	int len;
-	//float* E;
+	float dt;
 public:	
 	int readPattern(string filename);
 	bool check(dataContainer& E, long long index);
-	pattern(): len(0) {}
-	//pattern(float* newE): E(newE) {}
+	pattern(): len(0), dt(0.1) {}
+	void setDt(float new_dt);
+	int outStrikes(dataContainer& E, string& filename);
 };
 
 void truncData(dataContainer& E, int range);
@@ -30,3 +31,4 @@ void averageData(dataContainer& E, int range);
 void rcData(dataContainer& E, float rc);
 
 #endif
+	

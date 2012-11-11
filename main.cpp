@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 				printf("Expected: pattern file.\n");
 				return -1;
 			}
-			job.pattern=atof(argv[argNum]);
+			job.pattern=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -215,6 +215,9 @@ int main(int argc, char* argv[])
 		}
 		printf("Reading pattern from %s...\n", job.pattern.c_str());
 		res=patt.readPattern(job.pattern);
+		if (res) return res;
+		
+		res=patt.outStrikes(data, job.output_strikes);
 		if (res) return res;
 		printf("Done\n");
 	}	

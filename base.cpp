@@ -108,12 +108,12 @@ int dataContainer::readFresh(string& fileName)
 
 long long dataContainer::time2index(double time)
 {
-	return (long long) time * dataLen/timeLen;
+	return (long long) (((float)time * dataLen)/timeLen);
 }
 
 float dataContainer::index2time(long long ind)
 {
-	return ind * timeLen/dataLen;
+	return ((float) ind * timeLen)/dataLen;
 }
 
 int dataContainer::textOutput(string& filename)

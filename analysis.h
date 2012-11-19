@@ -21,7 +21,7 @@ private:
 public:	
 	int readPattern(string filename);
 	bool check(dataContainer& E, long long index);
-	pattern(): len(0), dt(0.1) {}
+	pattern(): len(0), dt(0.05) {}
 	void setDt(float new_dt);
 	int outStrikes(dataContainer& E, string& filename);
 };
@@ -29,6 +29,7 @@ public:
 void truncData(dataContainer& E, int range);
 void averageData(dataContainer& E, int range);
 void rcData(dataContainer& E, float rc);
+void quantumFilter(dataContainer& E, float quantum);
 
 #endif
 	

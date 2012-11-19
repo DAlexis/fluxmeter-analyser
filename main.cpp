@@ -23,6 +23,9 @@ struct jobList {
 	int trunc_range;
 	bool need_rc;
 	float rc;
+	bool need_quantum_filtering;
+	float quantum_size;
+	
 	
 	bool need_binary_input;
 	bool need_fresh_input;
@@ -52,11 +55,33 @@ jobList::jobList()
 	output_strikes="";
 }*/
 
+void printHelp()
+{
+	printf("\nflux-analysis <options> filename\n");
+	printf("\nOptions:\n");
+	printf("  --help, -h                       - print this help\n");
+	printf(" \nInput:\n");
+	printf("  --input-fresh, -f <filename>     - input from file with mesured data\n");
+	printf("  --input-binary, -i <filename>    - input from binary file\n");
+	printf(" \nOutput:\n");
+	printf("  --output-binary, -o <filename>   - file to binary out\n");
+	printf("  --output-text, -t <filename>     - file to text out\n");
+	printf("  --strikes-list, -s <filename>    - put strikes list to file\n");
+	printf(" \nOperating:\n");
+	printf("  --pattern, -p <filename>         - select pattern for strike detection\n");
+	printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
+	printf("  --trunc, -t <range>              - keep data shorter counting average of every <range>\n");
+	printf("  --rc, -r <time>                  - use RC-filter for signal with RC=time\n");
+	printf("  --quantum-filtering, -q <quantum>- pass data through the trigger\n");
+}
+
+
 /////////////////////////////////////////////////////////////////// main
 int main(int argc, char* argv[])
 {
 	if (argc==1) {
-		printf("Arguments not specified! Try --help for help.\n");
+		printf("Arguments not specified!\n\n");
+		printHelp();
 		return -1;
 	}	
 	jobList job;
@@ -65,22 +90,7 @@ int main(int argc, char* argv[])
 	string outputFile="", inputFile="";
 	while (argNum!=argc && argv[argNum][0]=='-') {
 		if (strcmp(argv[argNum], "-h")==0 || strcmp(argv[argNum], "--help")==0) {
-			printf("\nflux-analysis <options> filename\n");
-			printf("\nOptions:\n");
-			printf("  --help, -h                       - print this help\n");
-			printf(" \nInput:\n");
-			printf("  --input-fresh, -i <filename>     - input from file with mesured data\n");
-			printf("  --input-binary, -i <filename>    - input from binary file\n");
-			printf(" \nOutput:\n");
-			printf("  --output-binary, -o <filename>   - file to binary out\n");
-			printf("  --output-text, -o <filename>     - file to text out\n");
-			printf("  --strikes-list, -s <filename>    - put strikes list to file\n");
-			printf(" \nOperating:\n");
-			printf("  --pattern, -p <filename>         - select pattern for strike detection\n");
-			printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
-			printf("  --trunc, -t <range>              - keep data shorter counting average of every <range>\n");
-			printf("  --rc, -r <time>                  - use RC-filter for signal with RC=time\n");
-			
+			printHelp();
 			return 0;
 		}
 		if (strcmp(argv[argNum], "--input-fresh")==0 || strcmp(argv[argNum], "-f")==0) {
@@ -91,7 +101,16 @@ int main(int argc, char* argv[])
 			job.need_fresh_input=1;
 			job.fresh_input_filename=argv[argNum];
 			argNum++;
-			//printf("df\n");
+			continue;
+		}
+		if (strcmp(argv[argNum], "--quantum-filtering")==0 || strcmp(argv[argNum], "-q")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: quantum size.\n");
+				return -1;
+			}
+			job.need_quantum_filtering=1;
+			job.quantum_size=atof(argv[argNum]);
+			argNum++;
 			continue;
 		}
 		if (strcmp(argv[argNum], "--output-binary")==0 || strcmp(argv[argNum], "-o")==0) {
@@ -179,6 +198,7 @@ int main(int argc, char* argv[])
 	}
 	
 	dataContainer data;
+	
 	// Reading data
 	int res=0;
 	if (job.need_fresh_input) {
@@ -203,11 +223,17 @@ int main(int argc, char* argv[])
 		averageData(data, job.average_range);
 		printf("Done\n");
 	}
+	if (job.need_quantum_filtering) {
+		printf("Applying differential Schmitt trigger with min. step %f ...\n", job.quantum_size);
+		quantumFilter(data, job.quantum_size);
+		printf("Done\n");
+	}
 	if (job.need_rc) {
 		printf("Applying rc-filter with RC=%f ...\n", job.rc);
 		rcData(data, job.rc);
 		printf("Done\n");
 	}
+	// Outouting data
 	if (job.need_strikes) {
 		if (job.pattern=="") {
 			printf("No pattern for detection\n");

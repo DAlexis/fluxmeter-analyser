@@ -5,6 +5,10 @@
 
 using namespace std;
 
+// Some simple math
+
+//#define DEBUG_OUT
+
 int m_sign(float x)
 {
 	if (x<0) return -1;
@@ -16,6 +20,8 @@ float m_abs(float x)
 	if (x<0) return -x;
 	else return x;
 }
+
+// Class pattern
 
 int pattern::readPattern(string filename)
 {
@@ -40,30 +46,35 @@ int pattern::readPattern(string filename)
 	return 0;
 }
 
+
 bool pattern::check(dataContainer& E, long long index)
 {
 	int di=E.time2index(dt);
-	if (di==0) {
-		di=1;
-		dt=E.index2time(1);
-	}
+	if (di==0) di=1;
+	dt=E.index2time(di);
+	
 	long long i=index;
 	float df_dt=(E.E[i+di]-E.E[i])/dt;
 	int last_sign=1;
-	int stage=0;
-	int in_stage=0;
+	int stage;
+	int in_stage;
 	int count_in_stage;
-	printf ("\n%lld Starting detection, df_dt=%f, dt=%f, di=%d\n", index, df_dt, dt, di);
+#ifdef DEBUG_OUT
+	printf ("\nt=%f Starting detection, df_dt=%f, dt=%f, di=%d\n", E.index2time(index), df_dt, dt, di);
+#endif
 	
-	for (stage=0; stage<len; stage++){
+	for (stage=0; stage<len; stage++) {
 
-		count_in_stage=E.time2index(time[stage]);
+		count_in_stage=E.time2index(time[stage]); // time is RELATIVE previous mark!
+#ifdef DEBUG_OUT
 		printf("stage=%d, time[stage]=%f, count_in_stage=%d\n",stage, time[stage],count_in_stage);
-		
+#endif		
 		for (in_stage=0; in_stage<count_in_stage; in_stage++, i++) {
 			
 			df_dt=(E.E[i+di]-E.E[i])/dt;
-			printf ("  in_stage=%d, sign[stage]=%c, m_sign(df_dt)=%d\n", in_stage, sign[stage], m_sign(df_dt));
+#ifdef DEBUG_OUT
+			printf ("  in_stage=%d, sign[stage]=%c, m_sign(df_dt)=%d, df_dt=%f\n", in_stage, sign[stage], m_sign(df_dt), df_dt);
+#endif
 			switch(sign[stage])
 			{
 				case '+': if (m_sign(df_dt)==-1) return false; break;
@@ -79,7 +90,9 @@ bool pattern::check(dataContainer& E, long long index)
 		}
 		
 		last_sign=m_sign(df_dt);
+#ifdef DEBUG_OUT
 		printf("stage %d done\n", stage);
+#endif
 	}
 	return true;
 }
@@ -97,16 +110,18 @@ int pattern::outStrikes(dataContainer& E, string& filename)
 	for (j=0; j<len; j++) {
 		totalTime+=time[j];
 	}
-	long long maxi=E.dataLen-E.time2index(totalTime)-1;
-	for (i=0;i<7/*maxi*/; i++) {
+	long long maxi=E.dataLen-E.time2index(totalTime)-len;
+	for (i=0; i<maxi; i++) {
 		//printf("index=%lld ", i);
 		if (check(E, i)) {
-			fprintf(output, "%f\n", E.index2time(i));
+			fprintf(output, "%f %f\n", E.index2time(i), E.E[i]);
 		}
 	}
 	fclose(output);
 	return 0;
 }
+
+// Functions
 
 void truncData(dataContainer& E, int range)
 {
@@ -133,5 +148,19 @@ void averageData(dataContainer& E, int range)
 
 void rcData(dataContainer& E, float rc)
 {
-	printf ("TODO\n");
+	//printf ("TODO\n");
+	long long i;
+	float diff_t=E.index2time(1);
+	for (i=1; i<E.dataLen; i++) {
+		E.E[i]=E.E[i-1]+(E.E[i]-E.E[i-1])*diff_t/rc;
+	}	
+}
+
+void quantumFilter(dataContainer& E, float quantum)
+{
+	long long i;
+	for (i=1; i<E.dataLen; i++) {
+		if ( m_abs(E.E[i]-E.E[i-1]) <= quantum )
+			E.E[i]=E.E[i-1];
+	}
 }

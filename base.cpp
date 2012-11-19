@@ -124,7 +124,7 @@ int dataContainer::textOutput(string& filename)
 		return -2;
 	}
 	
-	char buffer[100];//="abcdefj";
+	char buffer[100];
 	long long i;
 	int j=0, k=0;
 	char bigBuffer[TEXT_BUFFER_SIZE]="";

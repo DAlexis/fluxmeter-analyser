@@ -42,14 +42,19 @@ struct jobList {
 	
 	bool need_strikes;
 	string pattern;
+	bool need_simple;
+	bool need_pattern;
 	string output_strikes;
+	string simple_config;
 	
 	bool need_trace;
 	double trace_begin, trace_end;
 	
 	jobList(): need_binary_input(0), need_fresh_input(0), 
 				need_binary_out(0), need_text_out(0), need_average(0), 
-				need_trunc(0), need_rc(0), need_strikes(0), need_trace(0), need_quantum_filtering(0), need_nl(0) {};
+				need_trunc(0), need_rc(0), need_strikes(0), need_trace(0),
+				need_quantum_filtering(0), need_nl(0),
+				need_simple(0), need_pattern(0) {};
 };
 /*
 jobList::jobList()
@@ -78,7 +83,12 @@ void printHelp()
 	printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
 	printf("  --trunc, -t <range>              - keep data shorter counting average of every <range>\n");
 	printf("  --rc, -r <time>                  - use RC-filter for signal with RC=time\n");
+	printf("  --NL, -N <exp> <const>           - use non-linear filter for signal with parameters\n");
 	printf("  --quantum-filtering, -q <quantum>- pass data through the trigger\n");
+	printf("  --simple-detection, -S <config>  - simple detection algorythm\n");
+	printf(" \nOptions:\n");
+	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
+	
 }
 
 
@@ -134,7 +144,7 @@ int main(int argc, char* argv[])
 			argNum++;
 			continue; 
 		}
-		if (strcmp(argv[argNum], "--need-NL")==0 || strcmp(argv[argNum], "-n")==0) {
+		if (strcmp(argv[argNum], "--NL")==0 || strcmp(argv[argNum], "-n")==0) {
 			job.need_nl=1;
 			if (argc == ++argNum) {
 				printf("Expected: exp.\n");
@@ -211,6 +221,7 @@ int main(int argc, char* argv[])
 			continue;
 		}
 		if (strcmp(argv[argNum], "--pattern")==0 || strcmp(argv[argNum], "-p")==0) {
+			job.need_pattern=1;
 			if (argc == ++argNum) {
 				printf("Expected: pattern file.\n");
 				return -1;
@@ -219,6 +230,18 @@ int main(int argc, char* argv[])
 			argNum++;
 			continue;
 		}
+		
+		if (strcmp(argv[argNum], "--simple-detection")==0 || strcmp(argv[argNum], "-S")==0) {
+			job.need_simple=1;
+			if (argc == ++argNum) {
+				printf("Expected: config file.\n");
+				return -1;
+			}
+			job.simple_config=argv[argNum];
+			argNum++;
+			continue;
+		}
+		
 		if (strcmp(argv[argNum], "--input-binary")==0 || strcmp(argv[argNum], "-i")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: input file.\n");
@@ -276,20 +299,28 @@ int main(int argc, char* argv[])
 	}
 	// Outouting data
 	if (job.need_strikes) {
-		if (job.pattern=="") {
-			printf("No pattern for detection\n");
-			return -2;
-		}
-		printf("Reading pattern from %s... ", job.pattern.c_str());
-		res=patt.readPattern(job.pattern);
-		if (res) return res;
-		
-		if (job.need_trace)
-			res=patt.outStrikes(data, job.output_strikes, job.trace_begin, job.trace_end);
-		else
-			res=patt.outStrikes(data, job.output_strikes);
+		if (job.need_pattern) {
+			printf("Reading pattern from %s... ", job.pattern.c_str());
+			res=patt.readPattern(job.pattern);
+			if (res) return res;
 			
-		if (res) return res;
+			if (job.need_trace)
+				res=patt.outStrikes(data, job.output_strikes, AM_PATTERN, job.trace_begin, job.trace_end);
+			else
+				res=patt.outStrikes(data, job.output_strikes, AM_PATTERN);
+				
+			if (res) return res;
+		} else if (job.need_simple) {
+			printf("Reading config from %s... ", job.simple_config.c_str());
+			res=patt.readSimplePattern(job.simple_config);
+			if (res) return res;
+			
+			if (job.need_trace)
+				res=patt.outStrikes(data, job.output_strikes, AM_SIMPLE, job.trace_begin, job.trace_end);
+			else
+				res=patt.outStrikes(data, job.output_strikes, AM_SIMPLE);
+				
+		}
 		printf("Done\n");
 	}	
 	if (job.need_binary_out) {

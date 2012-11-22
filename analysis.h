@@ -8,23 +8,34 @@ using namespace std;
 
 #define MAX_COND_LEN		100
 
-class pattern { 
+#define AM_SIMPLE			1
+#define AM_PATTERN			2
+
+class pattern {
 private: 
 	float time[MAX_COND_LEN];
 	float dfdt[MAX_COND_LEN];
 	char cond[MAX_COND_LEN]; // <, >
 	char sign[MAX_COND_LEN]; // s - same, d - different, e - every, +/-
 	char strength[MAX_COND_LEN]; // a - all the time, o - >=one time
-	//int index[MAX_COND_LEN];
+	
 	int len;
 	float dt;
+	
+	float preTime, pre_dfdt;
+	float stepTime, stepValue;
+	float reverseTime;
+	char needReverse; 
+	
 	bool check(dataContainer& E, long long index, bool print);
+	bool simpleCheck(dataContainer& E, long long index, bool print);
 public:	
 	int readPattern(string filename);
+	int readSimplePattern(string filename);
 	pattern(): len(0), dt(0.05) {}
 	void setDt(float new_dt);
-	int outStrikes(dataContainer& E, string& filename);
-	int outStrikes(dataContainer& E, string& filename, float tr_beg, float tr_end);
+	int outStrikes(dataContainer& E, string& filename, char method);
+	int outStrikes(dataContainer& E, string& filename, char method, float tr_beg, float tr_end);
 };
 
 void truncData(dataContainer& E, int range);

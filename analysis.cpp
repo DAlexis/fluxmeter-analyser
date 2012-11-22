@@ -3,6 +3,7 @@
 #include "analysis.h"
 #include "base.h" 
 #include <math.h>
+#include <string.h>
 
 using namespace std;
 
@@ -45,6 +46,58 @@ int pattern::readPattern(string filename)
 	return 0;
 }
 
+int pattern::readSimplePattern(string filename)
+{
+	
+	FILE *input=fopen(filename.c_str(), "r");
+	if (!input) {
+		printf("Can\'t open file %s for reading config!\n", filename.c_str());
+		return -2;
+	}
+	
+	char str[255];
+	while (!feof(input))
+	{
+		fscanf(input, "%s", str);
+		
+		if (strcmp(str, "preTime")==0) {		
+			fscanf(input, "%f", &preTime);
+			continue;
+		}
+		if (strcmp(str, "pre_dfdt")==0) {		
+			fscanf(input, "%f", &pre_dfdt);
+			continue;
+		}
+		if (strcmp(str, "stepTime")==0) {		
+			fscanf(input, "%f", &stepTime);
+			continue;
+		}
+		if (strcmp(str, "stepValue")==0) {		
+			fscanf(input, "%f", &stepValue);
+			continue;
+		}
+		if (strcmp(str, "needReverse")==0) {		
+			fscanf(input, "%d", &needReverse);
+			continue;
+		}
+		if (strcmp(str, "reverseTime")==0) {		
+			fscanf(input, "%f", &reverseTime);
+			continue;
+		}
+	}
+	/*
+	printf("preTime:%f\n", preTime);
+	printf("pre_dfdt:%f\n", pre_dfdt);
+	printf("stepTime:%f\n", stepTime);
+	printf("stepValue:%f\n", stepValue);
+	printf("needReverse:%c\n", needReverse);
+	printf("reverseTime:%f\n", reverseTime);
+	*/
+	printf("Config was successfuly readed.\n");
+		fclose(input);
+	return 0;
+}
+
 
 bool pattern::check(dataContainer& E, long long index, bool print)
 {
@@ -58,11 +111,9 @@ bool pattern::check(dataContainer& E, long long index, bool print)
 	int stage;
 	int in_stage;
 	int count_in_stage;
-
-
+	
 	if (print) printf ("\nt=%f Starting detection, df_dt=%f, dt=%f, di=%d\n", E.index2time(index), df_dt, dt, di);
 
-	
 	for (stage=0; stage<len; stage++) {
 
 		count_in_stage=E.time2index(time[stage]); // time is RELATIVE previous mark!
@@ -94,12 +145,59 @@ bool pattern::check(dataContainer& E, long long index, bool print)
 	return true;
 }
 
-int pattern::outStrikes(dataContainer& E, string& filename)
+bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 {
-	return outStrikes(E, filename, -1, -1);
+	int di=E.time2index(dt);
+	if (di==0) di=1;
+	dt=E.index2time(di);
+	
+	long long i=index;
+	long long maxi=E.time2index(preTime)+index;
+	
+	if (print) printf ("\nt=%f: ", E.index2time(index));
+	
+	//stage1
+	for (;i<=maxi; i++)
+	{
+		if ( m_abs( (E.E[i+di]-E.E[i])/dt ) > pre_dfdt) return false;
+	}
+	
+	
+	if (print) printf ("  Stage 1 completed\n");
+	
+	//stage2
+	float maxdiff=0, step_sign;
+	float first=E.E[i];
+	
+	maxi += E.time2index(stepTime);
+	for (;i<=maxi; i++)
+		if ( m_abs(E.E[i]-first) > maxdiff){
+			maxdiff=m_abs(E.E[i]-first);
+			step_sign=m_sign(E.E[i]-first);
+		}
+		
+
+	if (maxdiff<stepValue) return false;
+	if (print) printf ("  Stage 2 completed\n");
+	
+	//stage3
+	
+	if (!needReverse) return true;
+	
+	maxi += E.time2index(reverseTime);
+	for (;i<=maxi; i++)
+		if (step_sign != m_sign((E.E[i+di]-E.E[i])/dt) ) return true;
+	if (print) printf ("  Stage 3 completed\n");
+		
+	return false;
 }
 
-int pattern::outStrikes(dataContainer& E, string& filename, float tr_beg, float tr_end)
+int pattern::outStrikes(dataContainer& E, string& filename, char method)
+{
+	return outStrikes(E, filename, method, -1, -1);
+}
+
+int pattern::outStrikes(dataContainer& E, string& filename, char method, float tr_beg, float tr_end)
 {
 	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {
@@ -116,14 +214,20 @@ int pattern::outStrikes(dataContainer& E, string& filename, float tr_beg, float 
 	long long i_trBeg=E.time2index(tr_beg), i_trEnd=E.time2index(tr_end);
 	bool need_tr=false;
 	
+	bool result=false;
+	
 	for (i=0; i<maxi; i++) {
 		//printf("index=%lld ", i);
 		if (i>i_trEnd)
 			need_tr=false;
 		else if (i>i_trBeg)
 			need_tr=true;
-			
-		if (check(E, i, need_tr)) {
+		
+		if (method==AM_PATTERN) result=check(E, i, need_tr);
+			else if (method==AM_SIMPLE) result=simpleCheck(E, i, need_tr);
+			else { printf("Strange method!\n"); return -3;}
+		
+		if (result) {
 			fprintf(output, "%f %f\n", E.index2time(i), E.E[i]);
 		}
 	}

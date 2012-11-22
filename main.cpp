@@ -22,6 +22,9 @@ struct jobList {
 	bool need_trunc;
 	int trunc_range;
 	bool need_rc;
+	bool need_nl;
+	float par1, par2;
+	
 	float rc;
 	bool need_quantum_filtering;
 	float quantum_size;
@@ -41,9 +44,12 @@ struct jobList {
 	string pattern;
 	string output_strikes;
 	
+	bool need_trace;
+	double trace_begin, trace_end;
+	
 	jobList(): need_binary_input(0), need_fresh_input(0), 
 				need_binary_out(0), need_text_out(0), need_average(0), 
-				need_trunc(0), need_rc(0), need_strikes(0) {};
+				need_trunc(0), need_rc(0), need_strikes(0), need_trace(0), need_quantum_filtering(0), need_nl(0) {};
 };
 /*
 jobList::jobList()
@@ -110,6 +116,36 @@ int main(int argc, char* argv[])
 			}
 			job.need_quantum_filtering=1;
 			job.quantum_size=atof(argv[argNum]);
+			argNum++;
+			continue;
+		}
+		if (strcmp(argv[argNum], "--need-trace")==0 || strcmp(argv[argNum], "-T")==0) {
+			job.need_trace=1;
+			if (argc == ++argNum) {
+				printf("Expected: trace begin.\n");
+				return -1;
+			}			
+			job.trace_begin=atof(argv[argNum]);
+			if (argc == ++argNum) {
+				printf("Expected: trace end.\n");
+				return -1;
+			}			
+			job.trace_end=atof(argv[argNum]);
+			argNum++;
+			continue;
+		}
+		if (strcmp(argv[argNum], "--need-NL")==0 || strcmp(argv[argNum], "-n")==0) {
+			job.need_nl=1;
+			if (argc == ++argNum) {
+				printf("Expected: exp.\n");
+				return -1;
+			}			
+			job.par1=atof(argv[argNum]);
+			if (argc == ++argNum) {
+				printf("Expected: coefficient.\n");
+				return -1;
+			}			
+			job.par2=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}
@@ -214,23 +250,28 @@ int main(int argc, char* argv[])
 	pattern patt;
 	// Conversions
 	if (job.need_trunc) {
-		printf("Truncating data with range %d mesurings...\n", job.trunc_range);
+		printf("Truncating data with range %d mesurings... ", job.trunc_range);
 		truncData(data, job.trunc_range);
 		printf("Done\n");
 	}
 	if (job.need_average) {
-		printf("Counting average of %d mesurings...\n", job.average_range);
+		printf("Counting average of %d mesurings... ", job.average_range);
 		averageData(data, job.average_range);
 		printf("Done\n");
 	}
 	if (job.need_quantum_filtering) {
-		printf("Applying differential Schmitt trigger with min. step %f ...\n", job.quantum_size);
+		printf("Applying differential Schmitt trigger with min. step %f ... ", job.quantum_size);
 		quantumFilter(data, job.quantum_size);
 		printf("Done\n");
 	}
 	if (job.need_rc) {
-		printf("Applying rc-filter with RC=%f ...\n", job.rc);
+		printf("Applying rc-filter with RC=%f ... ", job.rc);
 		rcData(data, job.rc);
+		printf("Done\n");
+	}
+	if (job.need_nl) {
+		printf("Applying NL-filter with exp=%f, A=%f... ", job.par1, job.par2);
+		nlF1(data, job.par1, job.par2);
 		printf("Done\n");
 	}
 	// Outouting data
@@ -239,11 +280,15 @@ int main(int argc, char* argv[])
 			printf("No pattern for detection\n");
 			return -2;
 		}
-		printf("Reading pattern from %s...\n", job.pattern.c_str());
+		printf("Reading pattern from %s... ", job.pattern.c_str());
 		res=patt.readPattern(job.pattern);
 		if (res) return res;
 		
-		res=patt.outStrikes(data, job.output_strikes);
+		if (job.need_trace)
+			res=patt.outStrikes(data, job.output_strikes, job.trace_begin, job.trace_end);
+		else
+			res=patt.outStrikes(data, job.output_strikes);
+			
 		if (res) return res;
 		printf("Done\n");
 	}	

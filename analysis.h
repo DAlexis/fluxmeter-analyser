@@ -18,17 +18,19 @@ private:
 	//int index[MAX_COND_LEN];
 	int len;
 	float dt;
+	bool check(dataContainer& E, long long index, bool print);
 public:	
 	int readPattern(string filename);
-	bool check(dataContainer& E, long long index);
 	pattern(): len(0), dt(0.05) {}
 	void setDt(float new_dt);
 	int outStrikes(dataContainer& E, string& filename);
+	int outStrikes(dataContainer& E, string& filename, float tr_beg, float tr_end);
 };
 
 void truncData(dataContainer& E, int range);
 void averageData(dataContainer& E, int range);
 void rcData(dataContainer& E, float rc);
+void nlF1(dataContainer& E, float par1, float par2);
 void quantumFilter(dataContainer& E, float quantum);
 
 #endif

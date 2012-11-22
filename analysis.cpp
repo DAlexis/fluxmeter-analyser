@@ -2,12 +2,11 @@
 #include <string>
 #include "analysis.h"
 #include "base.h" 
+#include <math.h>
 
 using namespace std;
 
 // Some simple math
-
-//#define DEBUG_OUT
 
 int m_sign(float x)
 {
@@ -47,7 +46,7 @@ int pattern::readPattern(string filename)
 }
 
 
-bool pattern::check(dataContainer& E, long long index)
+bool pattern::check(dataContainer& E, long long index, bool print)
 {
 	int di=E.time2index(dt);
 	if (di==0) di=1;
@@ -59,22 +58,22 @@ bool pattern::check(dataContainer& E, long long index)
 	int stage;
 	int in_stage;
 	int count_in_stage;
-#ifdef DEBUG_OUT
-	printf ("\nt=%f Starting detection, df_dt=%f, dt=%f, di=%d\n", E.index2time(index), df_dt, dt, di);
-#endif
+
+
+	if (print) printf ("\nt=%f Starting detection, df_dt=%f, dt=%f, di=%d\n", E.index2time(index), df_dt, dt, di);
+
 	
 	for (stage=0; stage<len; stage++) {
 
 		count_in_stage=E.time2index(time[stage]); // time is RELATIVE previous mark!
-#ifdef DEBUG_OUT
-		printf("stage=%d, time[stage]=%f, count_in_stage=%d\n",stage, time[stage],count_in_stage);
-#endif		
+
+
+		if (print) printf("stage=%d, time[stage]=%f, count_in_stage=%d\n",stage, time[stage],count_in_stage);
+
 		for (in_stage=0; in_stage<count_in_stage; in_stage++, i++) {
 			
 			df_dt=(E.E[i+di]-E.E[i])/dt;
-#ifdef DEBUG_OUT
-			printf ("  in_stage=%d, sign[stage]=%c, m_sign(df_dt)=%d, df_dt=%f\n", in_stage, sign[stage], m_sign(df_dt), df_dt);
-#endif
+			if (print) printf ("  in_stage=%d, sign[stage]=%c, m_sign(df_dt)=%d, df_dt=%f\n", in_stage, sign[stage], m_sign(df_dt), df_dt);
 			switch(sign[stage])
 			{
 				case '+': if (m_sign(df_dt)==-1) return false; break;
@@ -90,14 +89,17 @@ bool pattern::check(dataContainer& E, long long index)
 		}
 		
 		last_sign=m_sign(df_dt);
-#ifdef DEBUG_OUT
-		printf("stage %d done\n", stage);
-#endif
+		if (print) printf("stage %d done\n", stage);
 	}
 	return true;
 }
 
 int pattern::outStrikes(dataContainer& E, string& filename)
+{
+	return outStrikes(E, filename, -1, -1);
+}
+
+int pattern::outStrikes(dataContainer& E, string& filename, float tr_beg, float tr_end)
 {
 	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {
@@ -111,9 +113,17 @@ int pattern::outStrikes(dataContainer& E, string& filename)
 		totalTime+=time[j];
 	}
 	long long maxi=E.dataLen-E.time2index(totalTime)-len;
+	long long i_trBeg=E.time2index(tr_beg), i_trEnd=E.time2index(tr_end);
+	bool need_tr=false;
+	
 	for (i=0; i<maxi; i++) {
 		//printf("index=%lld ", i);
-		if (check(E, i)) {
+		if (i>i_trEnd)
+			need_tr=false;
+		else if (i>i_trBeg)
+			need_tr=true;
+			
+		if (check(E, i, need_tr)) {
 			fprintf(output, "%f %f\n", E.index2time(i), E.E[i]);
 		}
 	}
@@ -153,6 +163,21 @@ void rcData(dataContainer& E, float rc)
 	float diff_t=E.index2time(1);
 	for (i=1; i<E.dataLen; i++) {
 		E.E[i]=E.E[i-1]+(E.E[i]-E.E[i-1])*diff_t/rc;
+	}	
+}
+
+float _pow(float a, float b)
+{
+	if (a<0) return -pow(-a, b);
+	return pow(a, b);
+}
+
+void nlF1(dataContainer& E, float par1, float par2)
+{
+	long long i;
+	float diff_t=E.index2time(1);
+	for (i=1; i<E.dataLen; i++) {
+		E.E[i]=E.E[i-1]+ _pow( (E.E[i]-E.E[i-1]), par1) *diff_t * par2;
 	}	
 }
 

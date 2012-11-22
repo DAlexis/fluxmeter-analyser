@@ -155,7 +155,7 @@ void averageData(dataContainer& E, int range)
 {
 	printf ("TODO\n");
 }
-
+ 
 void rcData(dataContainer& E, float rc)
 {
 	//printf ("TODO\n");
@@ -170,7 +170,7 @@ float _pow(float a, float b)
 {
 	if (a<0) return -pow(-a, b);
 	return pow(a, b);
-}
+}  
 
 void nlF1(dataContainer& E, float par1, float par2)
 {

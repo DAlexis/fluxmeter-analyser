@@ -2,7 +2,7 @@
 #define _BASE_H_
 
 #include <string>
-
+ 
 using namespace std; 
 
 class dataContainer {

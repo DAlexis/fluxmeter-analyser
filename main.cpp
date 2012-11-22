@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 			}			
 			job.trace_end=atof(argv[argNum]);
 			argNum++;
-			continue;
+			continue; 
 		}
 		if (strcmp(argv[argNum], "--need-NL")==0 || strcmp(argv[argNum], "-n")==0) {
 			job.need_nl=1;

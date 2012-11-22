@@ -104,7 +104,7 @@ int dataContainer::readFresh(string& fileName)
 	delete[] data;
 	//printf("%f %f\n", index2time(0), E[0]);
 	return 0;
-}
+} 
 
 long long dataContainer::time2index(double time)
 {

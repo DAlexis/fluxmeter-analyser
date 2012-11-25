@@ -83,7 +83,7 @@ void printHelp()
 	printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
 	printf("  --trunc, -t <range>              - keep data shorter counting average of every <range>\n");
 	printf("  --rc, -r <time>                  - use RC-filter for signal with RC=time\n");
-	printf("  --NL, -N <exp> <const>           - use non-linear filter for signal with parameters\n");
+	printf("  --NL, -n <exp> <const>           - use non-linear differential filter for signal with parameters\n");
 	printf("  --quantum-filtering, -q <quantum>- pass data through the trigger\n");
 	printf("  --simple-detection, -S <config>  - simple detection algorythm\n");
 	printf(" \nOptions:\n");

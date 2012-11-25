@@ -41,7 +41,7 @@ int pattern::readPattern(string filename)
 		//printf("time=%f, %c,%c,%c, val=%f\n", (time[len]), (sign[len]), (cond[len]), (strength[len]), (dfdt[len]));
 		len++;
 	}
-	printf("Pattern with length of %d successfuly readed.\n", len);
+	printf("Pattern with length of %d successfuly readed... ", len);
 	fclose(input);
 	return 0;
 }
@@ -84,6 +84,10 @@ int pattern::readSimplePattern(string filename)
 			fscanf(input, "%f", &reverseTime);
 			continue;
 		}
+		if (strcmp(str, "freezeTime")==0) {		
+			fscanf(input, "%f", &freezeTime);
+			continue;
+		}
 	}
 	/*
 	printf("preTime:%f\n", preTime);
@@ -93,7 +97,7 @@ int pattern::readSimplePattern(string filename)
 	printf("needReverse:%c\n", needReverse);
 	printf("reverseTime:%f\n", reverseTime);
 	*/
-	printf("Config was successfuly readed.\n");
+	printf("Config was successfuly readed... ");
 		fclose(input);
 	return 0;
 }
@@ -145,6 +149,33 @@ bool pattern::check(dataContainer& E, long long index, bool print)
 	return true;
 }
 
+void pattern::resetFreeze()
+{
+	freezeEnable==false;
+}
+
+void pattern::countFreezeIndex(dataContainer& E)
+{
+	freezeDInd=E.time2index(freezeTime);
+}
+
+bool pattern::checkResConsFreeze(long long &ind, bool print)
+{
+	if (!freezeEnable) {
+		freezeEnable=true;
+		lastDetection=ind;
+		return false;
+	}
+	if ((ind-lastDetection)>freezeDInd) {
+		lastDetection=ind;
+		return true;
+	} else {
+		if (print) printf ("  But freeze time. \n");
+		lastDetection=ind;
+		return false;
+	}
+}
+
 bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 {
 	int di=E.time2index(dt);
@@ -188,7 +219,8 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 	for (;i<=maxi; i++)
 		if (step_sign != m_sign((E.E[i+di]-E.E[i])/dt) ) return true;
 	if (print) printf ("  Stage 3 completed\n");
-		
+	
+	
 	return false;
 }
 
@@ -216,6 +248,9 @@ int pattern::outStrikes(dataContainer& E, string& filename, char method, float t
 	
 	bool result=false;
 	
+	countFreezeIndex(E);
+	resetFreeze();
+	
 	for (i=0; i<maxi; i++) {
 		//printf("index=%lld ", i);
 		if (i>i_trEnd)
@@ -226,6 +261,8 @@ int pattern::outStrikes(dataContainer& E, string& filename, char method, float t
 		if (method==AM_PATTERN) result=check(E, i, need_tr);
 			else if (method==AM_SIMPLE) result=simpleCheck(E, i, need_tr);
 			else { printf("Strange method!\n"); return -3;}
+		
+		if (result) result=checkResConsFreeze(i, need_tr);
 		
 		if (result) {
 			fprintf(output, "%f %f\n", E.index2time(i), E.E[i]);

@@ -25,10 +25,21 @@ private:
 	float preTime, pre_dfdt;
 	float stepTime, stepValue;
 	float reverseTime;
-	char needReverse; 
+	float freezeTime;
+	long long freezeDInd;
+	char needReverse;
+	
+	long long lastDetection;
+	bool freezeEnable; 
 	
 	bool check(dataContainer& E, long long index, bool print);
 	bool simpleCheck(dataContainer& E, long long index, bool print);
+	
+	void resetFreeze();
+
+	void countFreezeIndex(dataContainer& E);
+	bool checkResConsFreeze(long long &ind, bool print); // If detection pattern is OK call this to check if it is freeze time now
+	
 public:	
 	int readPattern(string filename);
 	int readSimplePattern(string filename);

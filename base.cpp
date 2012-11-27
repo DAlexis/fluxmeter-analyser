@@ -9,6 +9,7 @@
 using namespace std;
 
 #define TEXT_BUFFER_SIZE	10000
+#define MYZA_STR_COUNT		11065344
 
 const double timeLen=24*3600;
 
@@ -67,10 +68,9 @@ int dataContainer::binaryOutput(string& filename)
 	return 0;
 }
 
-int dataContainer::readFresh(string& fileName)
+int dataContainer::readStdTxt(string& fileName)
 {
 	struct stat inpStat;
-	
 	printf("Reading fresh data from %s...\n", fileName.c_str());
 	if (stat(fileName.c_str(), &inpStat)==-1) {
 		printf("Can\'t get size for %s.\n", fileName.c_str());
@@ -104,6 +104,65 @@ int dataContainer::readFresh(string& fileName)
 	delete[] data;
 	//printf("%f %f\n", index2time(0), E[0]);
 	return 0;
+}
+
+
+int dataContainer::readMyza(fileName)
+{
+	struct stat inpStat;
+	printf("Reading fresh data from %s...\n", fileName.c_str());
+	if (stat(fileName.c_str(), &inpStat)==-1) {
+		printf("Can\'t get size for %s.\n", fileName.c_str());
+		return -2;
+	}
+	long long fileSize=inpStat.st_size;
+	
+	FILE *input=fopen(fileName.c_str(), "rb");
+	if (!input) {
+		printf("Can\'t open input file for reading\n");
+		return -2;
+	}	
+	
+	char *buffer=new char[fileSize];
+	long long readed=fread(buffer, sizeof(char), fileSize, input);
+	printf("Successfully readed %lld of %lld bytes\n", readed, fileSize);
+	E=new float [MYZA_STR_COUNT+10];
+	long long i, j=0;
+	bool minus=false;
+	
+	for (i=0; i<fileSize; i++) {
+		if (buffer[j]='-') minus=true;
+			else minus=false;
+		j++;
+		E[i]=0;
+		while (buffer[j]!='\t') {
+			E[i]=E[i]*10+(buffer[j]-'0');
+			j++;
+		}
+		j++;
+		while (buffer[j]!=0x0D) {
+			//E[i]=E[i]*10+(buffer[j]-'0');
+			j++;
+		}
+		j+=2;
+		if (minus) E[i]=-E[i];
+		i++;
+		
+	}
+	delete[] buffer;
+	return 0;
+}
+
+int dataContainer::readFresh(string& fileName, string& inpFmt)
+{
+	if (inpFmt=="myza") {
+		return readMyza(fileName);
+	} else if (inpFmt=="ipf") {
+		// Reading data in 00:00:00,+0.09,0-like format
+		return readStdTxt(fileName);
+	}
+	printf("Unknown file format \"%s\"", inpFmt.c_str());
+	return -2;
 } 
 
 long long dataContainer::time2index(double time)

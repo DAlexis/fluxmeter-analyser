@@ -50,11 +50,14 @@ struct jobList {
 	bool need_trace;
 	double trace_begin, trace_end;
 	
+	string fresh_file_format;
+	
+	
 	jobList(): need_binary_input(0), need_fresh_input(0), 
 				need_binary_out(0), need_text_out(0), need_average(0), 
 				need_trunc(0), need_rc(0), need_strikes(0), need_trace(0),
 				need_quantum_filtering(0), need_nl(0),
-				need_simple(0), need_pattern(0) {};
+				need_simple(0), need_pattern(0), fresh_file_format("ipf") {};
 };
 /*
 jobList::jobList()
@@ -88,6 +91,9 @@ void printHelp()
 	printf("  --simple-detection, -S <config>  - simple detection algorythm\n");
 	printf(" \nOptions:\n");
 	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
+	printf("  --fresh-format, -F <format>      - set \"fresh file\" format. Default is \'ipf\'\n");
+	printf("	Now avaliable formats:\n");
+	printf("    ipf, myza\n");
 	
 }
 
@@ -126,6 +132,15 @@ int main(int argc, char* argv[])
 			}
 			job.need_quantum_filtering=1;
 			job.quantum_size=atof(argv[argNum]);
+			argNum++;
+			continue;
+		}
+		if (strcmp(argv[argNum], "--fresh-format")==0 || strcmp(argv[argNum], "-F")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: input file format.\n");
+				return -1;
+			}
+			job.fresh_file_format=argv[argNum];
 			argNum++;
 			continue;
 		}

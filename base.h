@@ -2,17 +2,20 @@
 #define _BASE_H_
 
 #include <string>
- 
+
 using namespace std; 
 
 class dataContainer {
+private:
+	int readStdTxt(string& fileName);
+	int readMyza(string& fileName); //  Temoprary :)
 public:
 	float *E;
 	long long dataLen;
 	
 	int binaryInput(string& filename);
 	int binaryOutput(string& filename);
-	int readFresh(string& fileName);
+	int readFresh(string& fileName, string& inpFmt);
 	int textOutput(string& filename);
 	
 	float index2time(long long ind);

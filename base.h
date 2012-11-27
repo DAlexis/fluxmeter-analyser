@@ -8,7 +8,7 @@ using namespace std;
 class dataContainer {
 private:
 	int readStdTxt(string& fileName);
-	int readMyza(string& fileName); //  Temoprary :)
+	int readMyza(string& fileName, int ncols, int col); //  Temoprary :)
 public:
 	float *E;
 	long long dataLen;

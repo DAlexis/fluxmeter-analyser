@@ -276,10 +276,11 @@ int main(int argc, char* argv[])
 	// Reading data
 	int res=0;
 	if (job.need_fresh_input) {
-		res=data.readFresh(job.fresh_input_filename);
+		res=data.readFresh(job.fresh_input_filename, job.fresh_file_format);
 	} else if (job.need_binary_input) {
 		res=data.binaryInput(job.binary_filename);
 	}
+	
 	if (res) return res;
 	if (!job.need_fresh_input && !job.need_binary_input) {
 		printf("Hm. I can\'t do anything without input file.\n");

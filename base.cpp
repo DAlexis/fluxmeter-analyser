@@ -107,7 +107,7 @@ int dataContainer::readStdTxt(string& fileName)
 }
 
 
-int dataContainer::readMyza(fileName)
+int dataContainer::readMyza(string& fileName, int ncols, int col)
 {
 	struct stat inpStat;
 	printf("Reading fresh data from %s...\n", fileName.c_str());
@@ -126,37 +126,50 @@ int dataContainer::readMyza(fileName)
 	char *buffer=new char[fileSize];
 	long long readed=fread(buffer, sizeof(char), fileSize, input);
 	printf("Successfully readed %lld of %lld bytes\n", readed, fileSize);
-	E=new float [MYZA_STR_COUNT+10];
+	if (readed!=fileSize) printf("!!! Hm. Not all file was readed.\n");
+	E=new float [MYZA_STR_COUNT];
 	long long i, j=0;
 	bool minus=false;
 	
-	for (i=0; i<fileSize; i++) {
-		if (buffer[j]='-') minus=true;
-			else minus=false;
-		j++;
+	unsigned int k;
+	char stopchar; 
+	if (col==ncols) stopchar=0x0D; else stopchar='\t';
+	
+	for (i=0; i<MYZA_STR_COUNT; i++) {
+					
 		E[i]=0;
-		while (buffer[j]!='\t') {
+		// Skipping columns before col
+		for (k=1; k<col; k++) {
+			while (buffer[j]!='\t') j++;
+			j++;
+		}
+		// Reading column we interested in	
+		if (buffer[j]=='-') {
+			minus=true;
+			j++;
+		}
+			else minus=false;
+	
+		while (buffer[j]!=stopchar) {
 			E[i]=E[i]*10+(buffer[j]-'0');
 			j++;
 		}
-		j++;
-		while (buffer[j]!=0x0D) {
-			//E[i]=E[i]*10+(buffer[j]-'0');
-			j++;
-		}
-		j+=2;
-		if (minus) E[i]=-E[i];
-		i++;
 		
+		// Waiting for eol
+		while (buffer[j]!=0x0A) j++;
+		j++;
+		if (minus) E[i]=-E[i];
 	}
+	dataLen=MYZA_STR_COUNT;
 	delete[] buffer;
+	
 	return 0;
 }
 
 int dataContainer::readFresh(string& fileName, string& inpFmt)
 {
 	if (inpFmt=="myza") {
-		return readMyza(fileName);
+		return readMyza(fileName, 2,1);
 	} else if (inpFmt=="ipf") {
 		// Reading data in 00:00:00,+0.09,0-like format
 		return readStdTxt(fileName);

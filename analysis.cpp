@@ -281,11 +281,13 @@ void truncData(dataContainer& E, int range)
 	int newDataLen=E.dataLen/range;
 	float* newE=new float[newDataLen];
 	long long offset=0;
+	
 	for(i=0;i<newDataLen; i++, offset+=range) {
 		newE[i]=0;
-		for (j=0; j<range; j++) {
+		for (j=0; j<range && offset+j<E.dataLen; j++) {
 			newE[i]+=E.E[offset+j];
 		}
+		newE[i]/=j;
 	}
 	delete[] E.E;
 	E.E=newE;
@@ -313,12 +315,24 @@ float _pow(float a, float b)
 	return pow(a, b);
 }  
 
+#define MAX_STEP_INCREASE		9
+
+float nlStep(float x, float par1, float par2)
+{
+	float res=_pow(x, par1)*par2;
+	
+	float xMax=x*MAX_STEP_INCREASE;
+	if (m_abs(res)>m_abs(xMax))
+		return xMax;
+	return res;
+}
+
 void nlF1(dataContainer& E, float par1, float par2)
 {
 	long long i;
 	float diff_t=E.index2time(1);
 	for (i=1; i<E.dataLen; i++) {
-		E.E[i]=E.E[i-1]+ _pow( (E.E[i]-E.E[i-1]), par1) *diff_t * par2;
+		E.E[i]=E.E[i-1]+ nlStep( (E.E[i]-E.E[i-1]), par1, par2) *diff_t;
 	}	
 }
 

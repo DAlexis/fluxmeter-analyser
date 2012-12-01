@@ -84,7 +84,7 @@ void printHelp()
 	printf(" \nOperating:\n");
 	printf("  --pattern, -p <filename>         - select pattern for strike detection\n");
 	printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
-	printf("  --trunc, -t <range>              - keep data shorter counting average of every <range>\n");
+	printf("  --trunc, -u <range>              - keep data shorter counting average of every <range>\n");
 	printf("  --rc, -r <time>                  - use RC-filter for signal with RC=time\n");
 	printf("  --NL, -n <exp> <const>           - use non-linear differential filter for signal with parameters\n");
 	printf("  --quantum-filtering, -q <quantum>- pass data through the trigger\n");
@@ -215,7 +215,7 @@ int main(int argc, char* argv[])
 			argNum++;
 			continue;
 		}		
-		if (strcmp(argv[argNum], "--trunc")==0 || strcmp(argv[argNum], "-t")==0) {
+		if (strcmp(argv[argNum], "--trunc")==0 || strcmp(argv[argNum], "-u")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: trunc range.\n");
 				return -1;

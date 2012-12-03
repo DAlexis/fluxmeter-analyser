@@ -13,6 +13,7 @@
 
 #include "base.h"
 #include "analysis.h"
+#include "statistics.h"
 
 using namespace std; 
 

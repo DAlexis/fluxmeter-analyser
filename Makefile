@@ -1,6 +1,6 @@
 CXXFLAGS=-Wall
 
-flux-analysis: main.o analysis.o base.o 
+flux-analysis: main.o analysis.o base.o statistics.cpp
 	g++ -Wall -o $@ $^ 
 	#main.o base.o analysis.o
 #analysis.o:

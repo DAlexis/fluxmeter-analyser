@@ -3,6 +3,7 @@
 
 #include "base.h"
 #include <vector>
+#include <string>
 
 struct strikeStruct {
 	float t, E;
@@ -10,10 +11,11 @@ struct strikeStruct {
 
 class strikesClass {
 private:
-	vector<strikeStruct> strikes;
+	std::vector<strikeStruct> strikes;
 	
 public:
 	void add(float t, float E);
+	int print(string& filename);
 };
 
 #endif

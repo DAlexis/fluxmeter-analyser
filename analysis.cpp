@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string>
-#include "analysis.h"
-#include "base.h" 
 #include <math.h>
 #include <string.h>
+
+#include "analysis.h"
 
 using namespace std;
 
@@ -224,18 +224,13 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 	return false;
 }
 
-int pattern::outStrikes(dataContainer& E, string& filename, char method)
+int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method)
 {
 	return outStrikes(E, filename, method, -1, -1);
 }
 
-int pattern::outStrikes(dataContainer& E, string& filename, char method, float tr_beg, float tr_end)
+int pattern::outStrikes(dataContainer& E, sstrikesClass& outp, char method, float tr_beg, float tr_end)
 {
-	FILE *output=fopen(filename.c_str(), "w");
-	if (!output) {
-		printf("Can\'t open output file %s for writing!\n", filename.c_str());
-		return -2;
-	}
 	long long i;
 	int j;
 	float totalTime=0;
@@ -252,7 +247,6 @@ int pattern::outStrikes(dataContainer& E, string& filename, char method, float t
 	resetFreeze();
 	
 	for (i=0; i<maxi; i++) {
-		//printf("index=%lld ", i);
 		if (i>i_trEnd)
 			need_tr=false;
 		else if (i>i_trBeg)
@@ -265,10 +259,9 @@ int pattern::outStrikes(dataContainer& E, string& filename, char method, float t
 		if (result) result=checkResConsFreeze(i, need_tr);
 		
 		if (result) {
-			fprintf(output, "%f %f\n", E.index2time(i), E.E[i]);
+			outp.add(E.index2time(i), E.E[i]);
 		}
 	}
-	fclose(output);
 	return 0;
 }
 
@@ -293,6 +286,8 @@ void truncData(dataContainer& E, int range)
 	E.E=newE;
 	E.dataLen=newDataLen;
 }
+
+
 
 void averageData(dataContainer& E, int range)
 {

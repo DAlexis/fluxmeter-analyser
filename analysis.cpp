@@ -151,7 +151,7 @@ bool pattern::check(dataContainer& E, long long index, bool print)
 
 void pattern::resetFreeze()
 {
-	freezeEnable==false;
+	freezeEnable=false;
 }
 
 void pattern::countFreezeIndex(dataContainer& E)
@@ -226,10 +226,10 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 
 int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method)
 {
-	return outStrikes(E, filename, method, -1, -1);
+	return outStrikes(E, outp, method, -1, -1);
 }
 
-int pattern::outStrikes(dataContainer& E, sstrikesClass& outp, char method, float tr_beg, float tr_end)
+int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method, float tr_beg, float tr_end)
 {
 	long long i;
 	int j;

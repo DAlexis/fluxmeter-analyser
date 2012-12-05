@@ -9,7 +9,7 @@
 using namespace std;
 
 #define TEXT_BUFFER_SIZE	10000
-#define MYZA_STR_COUNT		11065344
+
 
 const double timeLen=24*3600;
 
@@ -131,7 +131,7 @@ int dataContainer::readMyza(string& fileName, int ncols, int col)
 	long long i, j=0;
 	bool minus=false;
 	
-	unsigned int k;
+	int k;
 	char stopchar; 
 	if (col==ncols) stopchar=0x0D; else stopchar='\t';
 	
@@ -154,13 +154,18 @@ int dataContainer::readMyza(string& fileName, int ncols, int col)
 			E[i]=E[i]*10+(buffer[j]-'0');
 			j++;
 		}
-		
+		  
 		// Waiting for eol
 		while (buffer[j]!=0x0A) j++;
 		j++;
 		if (minus) E[i]=-E[i];
+		
+		if (j>=fileSize) {
+			printf ("j=%lld", j);
+			break;
+		}
 	}
-	dataLen=MYZA_STR_COUNT;
+	dataLen=i;
 	delete[] buffer;
 	
 	return 0;
@@ -169,7 +174,7 @@ int dataContainer::readMyza(string& fileName, int ncols, int col)
 int dataContainer::readFresh(string& fileName, string& inpFmt)
 {
 	if (inpFmt=="myza") {
-		return readMyza(fileName, 2,1);
+		return readMyza(fileName, 2,2);
 	} else if (inpFmt=="ipf") {
 		// Reading data in 00:00:00,+0.09,0-like format
 		return readStdTxt(fileName);

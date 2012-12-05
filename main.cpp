@@ -41,11 +41,15 @@ struct jobList {
 	string output_binary_filename;
 	string output_text_filename;
 	
-	bool need_strikes;
+	bool need_strikes_detection;
+	bool need_strikes_stat;
+	string output_stat_filename;
+	
 	string pattern;
+	bool need_strikes_list;
 	bool need_simple;
 	bool need_pattern;
-	string output_strikes;
+	string output_strikes_filename;
 	string simple_config;
 	
 	bool need_trace;
@@ -56,9 +60,10 @@ struct jobList {
 	
 	jobList(): need_binary_input(0), need_fresh_input(0), 
 				need_binary_out(0), need_text_out(0), need_average(0), 
-				need_trunc(0), need_rc(0), need_strikes(0), need_trace(0),
+				need_trunc(0), need_rc(0), need_strikes_list(0), need_trace(0),
 				need_quantum_filtering(0), need_nl(0),
-				need_simple(0), need_pattern(0), fresh_file_format("ipf") {};
+				need_simple(0), need_pattern(0), need_strikes_stat(0),
+				fresh_file_format("ipf") {};
 };
 /*
 jobList::jobList()
@@ -82,6 +87,7 @@ void printHelp()
 	printf("  --output-binary, -o <filename>   - file to binary out\n");
 	printf("  --output-text, -t <filename>     - file to text out\n");
 	printf("  --strikes-list, -s <filename>    - put strikes list to file\n");
+	printf("  --strikes-stat, -M <filename>    - print strikes per minute\n");
 	printf(" \nOperating:\n");
 	printf("  --pattern, -p <filename>         - select pattern for strike detection\n");
 	printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
@@ -198,11 +204,21 @@ int main(int argc, char* argv[])
 		}
 		if (strcmp(argv[argNum], "--strikes-list")==0 || strcmp(argv[argNum], "-s")==0) {
 			if (argc == ++argNum) {
-				printf("Expected: pattern file expected.\n");
+				printf("Expected: filename.\n");
 				return -1;
 			}
-			job.need_strikes=1;
-			job.output_strikes=argv[argNum];
+			job.need_strikes_list=1;
+			job.output_strikes_filename=argv[argNum];
+			argNum++;
+			continue;
+		}
+		if (strcmp(argv[argNum], "--strikes-stat")==0 || strcmp(argv[argNum], "-M")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: filename.\n");
+				return -1;
+			}
+			job.need_strikes_stat=1;
+			job.output_stat_filename=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -287,7 +303,9 @@ int main(int argc, char* argv[])
 		printf("Hm. I can\'t do anything without input file.\n");
 		return -3;
 	}
-	pattern patt;
+
+	
+	
 	// Conversions
 	if (job.need_trunc) {
 		printf("Truncating data with range %d mesurings... ", job.trunc_range);
@@ -314,32 +332,44 @@ int main(int argc, char* argv[])
 		nlF1(data, job.par1, job.par2);
 		printf("Done\n");
 	}
-	// Outouting data
-	if (job.need_strikes) {
-		if (job.need_pattern) {
-			printf("Reading pattern from %s... ", job.pattern.c_str());
-			res=patt.readPattern(job.pattern);
-			if (res) return res;
-			
-			if (job.need_trace)
-				res=patt.outStrikes(data, job.output_strikes, AM_PATTERN, job.trace_begin, job.trace_end);
-			else
-				res=patt.outStrikes(data, job.output_strikes, AM_PATTERN);
-				
-			if (res) return res;
-		} else if (job.need_simple) {
-			printf("Reading config from %s... ", job.simple_config.c_str());
-			res=patt.readSimplePattern(job.simple_config);
-			if (res) return res;
-			
-			if (job.need_trace)
-				res=patt.outStrikes(data, job.output_strikes, AM_SIMPLE, job.trace_begin, job.trace_end);
-			else
-				res=patt.outStrikes(data, job.output_strikes, AM_SIMPLE);
-				
-		}
-		printf("Done\n");
-	}	
+	pattern patt;
+	strikesClass strikes;
+	
+	// Detection
+	if (job.need_pattern) {
+		printf("Reading pattern from %s... ", job.pattern.c_str());
+		res=patt.readPattern(job.pattern);
+		if (res) return res;
+		
+		if (job.need_trace)
+			res=patt.outStrikes(data, strikes, AM_PATTERN, job.trace_begin, job.trace_end);
+		else
+			res=patt.outStrikes(data, strikes, AM_PATTERN);
+		printf ("Done.\n");
+	} else if (job.need_simple) {
+		printf("Reading config from %s... ", job.simple_config.c_str());
+		res=patt.readSimplePattern(job.simple_config);
+		if (res) return res;
+		
+		if (job.need_trace)
+			res=patt.outStrikes(data, strikes, AM_SIMPLE, job.trace_begin, job.trace_end);
+		else
+			res=patt.outStrikes(data, strikes, AM_SIMPLE);
+		printf ("Done.\n");		
+	} else printf("No detection option enabed.\n");
+	
+	if (job.need_strikes_list) {
+		printf("Writing strikes list to %s\n", job.output_strikes_filename.c_str());
+		res=strikes.print(job.output_strikes_filename);
+		if (res) return res;
+	}
+	
+	if (job.need_strikes_stat) {
+		printf("Writing strikes hist to %s\n", job.output_strikes_filename.c_str());
+		res=strikes.printHist(job.output_stat_filename);
+		if (res) return res;
+	}
+	
 	if (job.need_binary_out) {
 		printf("Writing binary data to %s\n", job.output_binary_filename.c_str());
 		res=data.binaryOutput(job.output_binary_filename);

@@ -5,6 +5,8 @@
 
 using namespace std; 
 
+#define MYZA_STR_COUNT		11065000
+
 class dataContainer {
 private:
 	int readStdTxt(string& fileName);

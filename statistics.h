@@ -9,13 +9,16 @@ struct strikeStruct {
 	float t, E;
 };
 
+typedef std::vector<strikeStruct> st_vec;
+
 class strikesClass {
 private:
-	std::vector<strikeStruct> strikes;
+	st_vec strikes;
 	
 public:
 	void add(float t, float E);
 	int print(string& filename);
+	int printHist(string& filename);
 };
 
 #endif

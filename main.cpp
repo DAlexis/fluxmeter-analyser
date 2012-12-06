@@ -58,22 +58,14 @@ struct jobList {
 	string fresh_file_format;
 	
 	
-	jobList(): need_binary_input(0), need_fresh_input(0), 
-				need_binary_out(0), need_text_out(0), need_average(0), 
-				need_trunc(0), need_rc(0), need_strikes_list(0), need_trace(0),
-				need_quantum_filtering(0), need_nl(0),
-				need_simple(0), need_pattern(0), need_strikes_stat(0),
+	jobList(): need_binary_input(false), need_fresh_input(false), 
+				need_text_out(false),
+				need_binary_out(false),  need_average(false), 
+				need_trunc(false), need_rc(false), need_strikes_list(false), need_trace(false),
+				need_quantum_filtering(false), need_nl(false),
+				need_simple(false), need_pattern(false), need_strikes_stat(false),
 				fresh_file_format("ipf") {};
 };
-/*
-jobList::jobList()
-{
-	binary_filename="";
-	pattern="";
-	output_binary_filename="";
-	output_text_filename="";
-	output_strikes="";
-}*/
 
 void printHelp()
 {
@@ -365,7 +357,7 @@ int main(int argc, char* argv[])
 	}
 	
 	if (job.need_strikes_stat) {
-		printf("Writing strikes hist to %s\n", job.output_strikes_filename.c_str());
+		printf("Writing strikes hist to %s\n", job.output_stat_filename.c_str());
 		res=strikes.printHist(job.output_stat_filename);
 		if (res) return res;
 	}

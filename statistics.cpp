@@ -51,7 +51,7 @@ int strikesClass::printHist(string& filename)
 				it++;
 				if (it==strikes.end()) break;
 			}
-		fprintf(output, "%d\n", currMin);
+		fprintf(output, "%ld %d\n", time, currMin);
 	}
 	
 	printf("Done.\n");

@@ -161,7 +161,6 @@ int dataContainer::readMyza(string& fileName, int ncols, int col)
 		if (minus) E[i]=-E[i];
 		
 		if (j>=fileSize) {
-			printf ("j=%lld", j);
 			break;
 		}
 	}
@@ -218,5 +217,6 @@ int dataContainer::textOutput(string& filename)
 		}
 	}
 	fclose(output);
+	printf("Done.\n");
 	return 0;
 }

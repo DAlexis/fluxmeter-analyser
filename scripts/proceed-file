@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#dir="./2012/Myza_2012/"
+#file="Myza_2012_06_12__00_00_00"
+
+dir=$1
+file=$2
+
+filedsf=$file.dsf
+filedat=$file.dat
+
+fullname=$dir$filedsf
+
+echo "* Coping $fullname..."
+cp $fullname .
+echo "* Running Windoos tool..."
+wine dsf2dat.exe $filedsf
+
+echo "* Creating plain data..."
+./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005
+echo "* Filtering..."
+./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt"

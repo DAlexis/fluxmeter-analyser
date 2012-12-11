@@ -369,24 +369,24 @@ int main(int argc, char* argv[])
 	} else printf("No detection option enabed.\n");
 	
 	if (job.need_strikes_list) {
-		printf("Writing strikes list to %s\n", job.output_strikes_filename.c_str());
+		printf("Writing strikes list to %s... ", job.output_strikes_filename.c_str());
 		res=strikes.print(job.output_strikes_filename);
 		if (res) return res;
 	}
 	
 	if (job.need_strikes_stat) {
-		printf("Writing strikes hist to %s\n", job.output_stat_filename.c_str());
+		printf("Writing strikes hist to %s... ", job.output_stat_filename.c_str());
 		res=strikes.printHist(job.output_stat_filename);
 		if (res) return res;
 	}
 	
 	if (job.need_binary_out) {
-		printf("Writing binary data to %s\n", job.output_binary_filename.c_str());
+		printf("Writing binary data to %s... ", job.output_binary_filename.c_str());
 		res=data.binaryOutput(job.output_binary_filename);
 		if (res) return res;
 	}
 	if (job.need_text_out) {
-		printf("Writing text data to %s\n", job.output_text_filename.c_str());
+		printf("Writing text data to %s... ", job.output_text_filename.c_str());
 		res=data.textOutput(job.output_text_filename);
 		if (res) return res;
 	}

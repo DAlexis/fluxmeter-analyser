@@ -11,7 +11,7 @@ void strikesClass::add(float t, float E)
 
 int strikesClass::print(std::string& filename)
 {
-	FILE *output=fopen(filename.c_str(), "r");
+	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {
 		printf("Can\'t open file %s for writing strikes list!\n", filename.c_str());
 		return -2;

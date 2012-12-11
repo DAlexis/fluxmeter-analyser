@@ -330,12 +330,20 @@ void nlF1(dataContainer& E, float par1, float par2)
 		E.E[i]=E.E[i-1]+ nlStep( (E.E[i]-E.E[i-1]), par1, par2) *diff_t;
 	}	
 }
-
+ 
 void quantumFilter(dataContainer& E, float quantum)
 {
 	long long i;
 	for (i=1; i<E.dataLen; i++) {
 		if ( m_abs(E.E[i]-E.E[i-1]) <= quantum )
 			E.E[i]=E.E[i-1];
+	}
+}
+
+void renorm(dataContainer& E, float k)
+{
+	long long i;
+	for (i=1; i<E.dataLen; i++) {
+		E.E[i]*=k;
 	}
 }

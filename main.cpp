@@ -56,6 +56,9 @@ struct jobList {
 	double trace_begin, trace_end;
 	
 	string fresh_file_format;
+
+	bool need_renorm;
+	float renorm_k;
 	
 	
 	jobList(): need_binary_input(false), need_fresh_input(false), 
@@ -64,7 +67,7 @@ struct jobList {
 				need_trunc(false), need_rc(false), need_strikes_list(false), need_trace(false),
 				need_quantum_filtering(false), need_nl(false),
 				need_simple(false), need_pattern(false), need_strikes_stat(false),
-				fresh_file_format("ipf") {};
+				fresh_file_format("ipf"), need_renorm(false), renorm_k(1) {};
 };
 
 void printHelp()
@@ -81,6 +84,7 @@ void printHelp()
 	printf("  --strikes-list, -s <filename>    - put strikes list to file\n");
 	printf("  --strikes-stat, -M <filename>    - print strikes per minute\n");
 	printf(" \nOperating:\n");
+	printf("  --renorm, -r <coefficient>       - multiply every value by coefficient\n");
 	printf("  --pattern, -p <filename>         - select pattern for strike detection\n");
 	printf("  --average, -v <range>            - keep i number average (i-range, i+range)\n");
 	printf("  --trunc, -u <range>              - keep data shorter counting average of every <range>\n");
@@ -121,6 +125,16 @@ int main(int argc, char* argv[])
 			}
 			job.need_fresh_input=1;
 			job.fresh_input_filename=argv[argNum];
+			argNum++;
+			continue;
+		}
+		if (strcmp(argv[argNum], "--renorm")==0 || strcmp(argv[argNum], "-r")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: coefficient.\n");
+				return -1;
+			}
+			job.need_renorm=1;
+			job.renorm_k=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}
@@ -295,10 +309,14 @@ int main(int argc, char* argv[])
 		printf("Hm. I can\'t do anything without input file.\n");
 		return -3;
 	}
-
-	
 	
 	// Conversions
+	if (job.need_renorm) {
+		printf("Renorming data with k=%f... ", job.renorm_k);
+		renorm(data, job.renorm_k);
+		printf("Done\n");
+	}
+	
 	if (job.need_trunc) {
 		printf("Truncating data with range %d mesurings... ", job.trunc_range);
 		truncData(data, job.trunc_range);

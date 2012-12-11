@@ -40,7 +40,7 @@ private:
 
 	void countFreezeIndex(dataContainer& E);
 	bool checkResConsFreeze(long long &ind, bool print); // If detection pattern is OK call this to check if it is freeze time now
-	
+	 
 public:	
 	int readPattern(string filename);
 	int readSimplePattern(string filename);
@@ -55,6 +55,7 @@ void averageData(dataContainer& E, int range);
 void rcData(dataContainer& E, float rc);
 void nlF1(dataContainer& E, float par1, float par2);
 void quantumFilter(dataContainer& E, float quantum);
+void renorm(dataContainer& E, float k);
 
 #endif
 	

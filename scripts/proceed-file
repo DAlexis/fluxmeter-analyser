@@ -11,12 +11,19 @@ filedat=$file.dat
 
 fullname=$dir$filedsf
 
-echo "* Coping $fullname..."
+echo "  + Coping $fullname..."
 cp $fullname .
-echo "* Running Windoos tool..."
+echo "  + Running Windoos tool..."
 wine dsf2dat.exe $filedsf
 
-echo "* Creating plain data..."
-./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005
-echo "* Filtering..."
-./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt"
+echo "  + Creating plain data..."
+./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005 >> log.log
+echo "  + Filtering..."
+./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt" >> log.log
+echo "  + Plotting E(t) graph with gnuplot..."
+cat plot-graph.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+gnuplot plot-current.gp >> log.log 2>&1
+echo "  + Plotting histogram with gnuplot..."
+cat plot-hist.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+gnuplot plot-current.gp >> log.log 2>&1
+

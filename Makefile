@@ -2,17 +2,8 @@ CXXFLAGS=-Wall
 
 all: flux-analysis install
 
-flux-analysis: main.o analysis.o base.o statistics.cpp
+flux-analysis: main.o analysis.o base.o statistics.cpp cmdline-parser.o
 	g++ -Wall -o $@ $^ 
-	#main.o base.o analysis.o
-#analysis.o:
-#	g++ -Wall -c analysis.cpp
-#inpout.o:
-#	g++ -Wall -c inpout.cpp
-#main.o:
-#	g++ -Wall -c main.cpp
-#base.o:
-#	g++ -Wall -c main.cpp
 clean:
 	rm main.o
 	rm flux-analysis

@@ -26,6 +26,7 @@ void jobList::printHelp()
 	printf("  --quantum-filtering, -q <quantum>- pass data through the trigger\n");
 	printf("  --simple-detection, -S <config>  - simple detection algorythm\n");
 	printf(" \nOptions:\n");
+	printf("  --trunc-text, -K <value>         - out only every <value> value when text outputing\n");
 	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
 	printf("  --fresh-format, -F <format>      - set \"fresh file\" format. Default is \'ipf\'\n");
 	printf("	Now avaliable formats:\n");
@@ -42,7 +43,6 @@ int jobList::parse(int argc, char **argv)
 		printHelp();
 		return -1;
 	}	
-	jobList job;
 	
 	int argNum=1;
 	string outputFile="", inputFile="";
@@ -52,13 +52,23 @@ int jobList::parse(int argc, char **argv)
 			printHelp();
 			return 0;
 		}
+		if (strcmp(argv[argNum], "--trunc-text")==0 || strcmp(argv[argNum], "-K")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: trucation value.\n");
+				return -1;
+			}
+			need_trunc_text_out=true;
+			text_out_trunc=atoi(argv[argNum]);
+			argNum++;
+			continue;
+		}
 		if (strcmp(argv[argNum], "--input-fresh")==0 || strcmp(argv[argNum], "-f")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: data file.\n");
 				return -1;
 			}
-			job.need_fresh_input=1;
-			job.fresh_input_filename=argv[argNum];
+			need_fresh_input=1;
+			fresh_input_filename=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -67,8 +77,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: coefficient.\n");
 				return -1;
 			}
-			job.need_renorm=1;
-			job.renorm_k=atof(argv[argNum]);
+			need_renorm=1;
+			renorm_k=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}
@@ -77,8 +87,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: quantum size.\n");
 				return -1;
 			}
-			job.need_quantum_filtering=1;
-			job.quantum_size=atof(argv[argNum]);
+			need_quantum_filtering=1;
+			quantum_size=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}
@@ -87,37 +97,37 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: input file format.\n");
 				return -1;
 			}
-			job.fresh_file_format=argv[argNum];
+			fresh_file_format=argv[argNum];
 			argNum++;
 			continue;
 		}
 		if (strcmp(argv[argNum], "--need-trace")==0 || strcmp(argv[argNum], "-T")==0) {
-			job.need_trace=1;
+			need_trace=1;
 			if (argc == ++argNum) {
 				printf("Expected: trace begin.\n");
 				return -1;
 			}			
-			job.trace_begin=atof(argv[argNum]);
+			trace_begin=atof(argv[argNum]);
 			if (argc == ++argNum) {
 				printf("Expected: trace end.\n");
 				return -1;
 			}			
-			job.trace_end=atof(argv[argNum]);
+			trace_end=atof(argv[argNum]);
 			argNum++;
 			continue; 
 		}
 		if (strcmp(argv[argNum], "--NL")==0 || strcmp(argv[argNum], "-n")==0) {
-			job.need_nl=1;
+			need_nl=1;
 			if (argc == ++argNum) {
 				printf("Expected: exp.\n");
 				return -1;
 			}			
-			job.par1=atof(argv[argNum]);
+			par1=atof(argv[argNum]);
 			if (argc == ++argNum) {
 				printf("Expected: coefficient.\n");
 				return -1;
 			}			
-			job.par2=atof(argv[argNum]);
+			par2=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}
@@ -126,8 +136,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: binary output file and input file.\n");
 				return -1;
 			}
-			job.need_binary_out=1;
-			job.output_binary_filename=argv[argNum];
+			need_binary_out=1;
+			output_binary_filename=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -136,8 +146,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: text output file and input file.\n");
 				return -1;
 			}
-			job.need_text_out=1;
-			job.output_text_filename=argv[argNum];
+			need_text_out=1;
+			output_text_filename=argv[argNum];
 			argNum++;
 			//printf("dot\n");
 			continue;
@@ -147,8 +157,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: filename.\n");
 				return -1;
 			}
-			job.need_strikes_list=1;
-			job.output_strikes_filename=argv[argNum];
+			need_strikes_list=1;
+			output_strikes_filename=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -157,8 +167,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: filename.\n");
 				return -1;
 			}
-			job.need_strikes_stat=1;
-			job.output_stat_filename=argv[argNum];
+			need_strikes_stat=1;
+			output_stat_filename=argv[argNum];
 			argNum++;
 			continue;
 		}
@@ -167,8 +177,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: average range.\n");
 				return -1;
 			}
-			job.need_average=1;
-			job.average_range=atof(argv[argNum]);
+			need_average=1;
+			average_range=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}		
@@ -177,8 +187,8 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: trunc range.\n");
 				return -1;
 			}
-			job.need_trunc=1;
-			job.trunc_range=atoi(argv[argNum]);
+			need_trunc=1;
+			trunc_range=atoi(argv[argNum]);
 			argNum++;
 			continue;
 		}
@@ -187,31 +197,31 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: circuit time.\n");
 				return -1;
 			}
-			job.need_rc=1;
-			job.rc=atof(argv[argNum]);
+			need_rc=1;
+			rc=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}
 		if (strcmp(argv[argNum], "--pattern")==0 || strcmp(argv[argNum], "-p")==0) {
-			job.need_pattern=1;
+			need_pattern=1;
 			if (argc == ++argNum) {
 				printf("Expected: pattern file.\n");
 				return -1;
 			}
-			job.pattern=argv[argNum];
+			pattern=argv[argNum];
 			argNum++;
 			continue;
 		}
 		
 		if (strcmp(argv[argNum], "--simple-detection")==0 || strcmp(argv[argNum], "-S")==0) {
-			job.need_simple=1;
+			need_simple=1;
 			if (argc == ++argNum) {
 				printf("Expected: config file.\n");
 				return -1;
 			}
-			job.simple_config=argv[argNum];
+			simple_config=argv[argNum];
 			argNum++;
-			continue;
+			continue; 
 		}
 		
 		if (strcmp(argv[argNum], "--input-binary")==0 || strcmp(argv[argNum], "-i")==0) {
@@ -219,12 +229,13 @@ int jobList::parse(int argc, char **argv)
 				printf("Expected: input file.\n");
 				return -1;
 			}
-			job.need_binary_input=1;
-			job.binary_filename=argv[argNum];
+			need_binary_input=1;
+			binary_filename=argv[argNum];
 			argNum++;
 			continue;
 		}
 		printf("Unknown key: %s\n", argv[argNum]);
 		return -1;
 	}
+	return 0;
 }

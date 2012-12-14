@@ -17,18 +17,18 @@
 
 using namespace std; 
 
-
-
 /////////////////////////////////////////////////////////////////// main
 int main(int argc, char* argv[])
 {
 	jobList job;
-	job.parse(argc, argv);
+	int res=0;
+	res=job.parse(argc, argv);
+	if (res) return res;
 	
 	dataContainer data;
 	
 	// Reading data
-	int res=0;
+	
 	if (job.need_fresh_input) {
 		res=data.readFresh(job.fresh_input_filename, job.fresh_file_format);
 	} else if (job.need_binary_input) {

@@ -97,7 +97,7 @@ int pattern::readSimplePattern(string filename)
 	printf("needReverse:%c\n", needReverse);
 	printf("reverseTime:%f\n", reverseTime);
 	*/
-	printf("Config was successfuly readed... ");
+	printf("Done.\n");
 		fclose(input);
 	return 0;
 }

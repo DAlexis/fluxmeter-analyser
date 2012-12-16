@@ -1,0 +1,27 @@
+#ifndef _SYSTEMCLASS_H_
+#define _SYSTEMCLASS_H_
+
+#include "base.h"
+#include "analysis.h"
+#include "statistics.h"
+#include "cmdline-parser.h"
+
+class systemClass
+{
+private:
+	dataContainer data;
+	jobList job;
+	pattern patt;
+	strikesClass strikes;
+public:
+	int getCmdline(int argc, char** argv);
+	int input();
+	void process();
+	int output();
+	
+	int configDetector();
+	void detect();
+};
+
+
+#endif

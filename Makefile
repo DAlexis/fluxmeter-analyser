@@ -2,7 +2,7 @@ CXXFLAGS=-Wall
 
 all: flux-analysis install
 
-flux-analysis: main.o analysis.o base.o statistics.cpp cmdline-parser.o
+flux-analysis: main.o analysis.o base.o statistics.cpp cmdline-parser.o system-class.o
 	g++ -Wall -o $@ $^ 
 clean:
 	rm main.o

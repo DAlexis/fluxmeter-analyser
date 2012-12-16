@@ -52,6 +52,7 @@ struct jobList
 	bool need_trunc_text_out;
 	int text_out_trunc;
 	
+	float time_shift;
 	
 	jobList():  need_average(false), need_trunc(false), need_rc(false), need_nl(false),
 				need_quantum_filtering(false), need_binary_input(false), need_fresh_input(false), 
@@ -59,7 +60,7 @@ struct jobList
 				  need_strikes_list(false),  
 				
 				need_simple(false), need_pattern(false), need_trace(false),
-				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), need_trunc_text_out(false), text_out_trunc(10) {};
+				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), need_trunc_text_out(false), text_out_trunc(10), time_shift(0) {};
 	
 	int parse(int argc, char **argv);
 	void printHelp();

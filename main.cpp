@@ -18,12 +18,23 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 	systemClass sys;	
-	sys.getCmdline(argc, argv);
-	sys.input();
+	int res=0;
+	
+	res=sys.getCmdline(argc, argv);
+	if (res) return res;
+	
+	res=sys.input();
+	if (res) return res;
+	
 	sys.process();
-	sys.configDetector();
+	
+	res=sys.configDetector();
+	if (res) return res;
+	
 	sys.detect();
-	sys.output();
+	
+	res=sys.output();
+	if (res) return res;
 	
 	return 0;
 }

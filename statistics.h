@@ -14,11 +14,12 @@ typedef std::vector<strikeStruct> st_vec;
 class strikesClass {
 private:
 	st_vec strikes;
-	
 public:
+	float time_shift;
 	void add(float t, float E);
 	int print(string& filename);
 	int printHist(string& filename);
+	strikesClass():time_shift(0){}
 };
 
 #endif

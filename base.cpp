@@ -205,7 +205,7 @@ int dataContainer::textOutput(string& filename)
 	int j=0, k=0;
 	char bigBuffer[TEXT_BUFFER_SIZE]="";
 	for (i=0; i<dataLen; i++) {
-		sprintf(buffer, "%f %f\n", index2time(i), E[i]);
+		sprintf(buffer, "%f %f\n", index2time(i)+time_shift, E[i]);
 		k=0;
 		while (buffer[k]!='\0') {
 			bigBuffer[j++]=buffer[k++];
@@ -219,4 +219,9 @@ int dataContainer::textOutput(string& filename)
 	fclose(output);
 	printf("Done.\n");
 	return 0;
+}
+
+void dataContainer::setTimeShift(float shift)
+{
+	time_shift=shift*60*60;
 }

@@ -29,6 +29,12 @@ int systemClass::input()
 
 void systemClass::process()
 {
+	if (job.time_shift!=0) {
+		printf ("Using time shift %f.\n", job.time_shift);
+		data.setTimeShift(job.time_shift);
+		strikes.time_shift=job.time_shift;
+	}
+	
 	if (job.need_renorm) {
 		printf("Renorming data with k=%f... ", job.renorm_k);
 		renorm(data, job.renorm_k);

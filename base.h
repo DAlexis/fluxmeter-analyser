@@ -12,6 +12,7 @@ private:
 	int readStdTxt(string& fileName);
 	int readMyza(string& fileName, int ncols, int col); //  Temoprary :)
 public:
+	float time_shift;
 	float *E;
 	long long dataLen;
 	
@@ -22,6 +23,8 @@ public:
 	
 	float index2time(long long ind);
 	long long time2index(double time);
+	
+	void setTimeShift(float shift);
 	
 	~dataContainer();
 };

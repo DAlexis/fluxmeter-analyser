@@ -89,14 +89,7 @@ int pattern::readSimplePattern(string filename)
 			continue;
 		}
 	}
-	/*
-	printf("preTime:%f\n", preTime);
-	printf("pre_dfdt:%f\n", pre_dfdt);
-	printf("stepTime:%f\n", stepTime);
-	printf("stepValue:%f\n", stepValue);
-	printf("needReverse:%c\n", needReverse);
-	printf("reverseTime:%f\n", reverseTime);
-	*/
+	
 	printf("Done.\n");
 		fclose(input);
 	return 0;
@@ -259,7 +252,7 @@ int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method, float
 		if (result) result=checkResConsFreeze(i, need_tr);
 		
 		if (result) {
-			outp.add(E.index2time(i), E.E[i]);
+			outp.add(E.index2time(i)+E.time_shift, E.E[i]);
 		}
 	}
 	return 0;

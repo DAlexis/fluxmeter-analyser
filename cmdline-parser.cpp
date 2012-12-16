@@ -25,6 +25,7 @@ void jobList::printHelp()
 	printf("  --NL, -n <exp> <const>           - use non-linear differential filter for signal with parameters\n");
 	printf("  --quantum-filtering, -q <quantum>- pass data through the trigger\n");
 	printf("  --simple-detection, -S <config>  - simple detection algorythm\n");
+	printf("  --time-shift, -z <shift>         - use time shift\n");
 	printf(" \nOptions:\n");
 	printf("  --trunc-text, -K <value>         - out only every <value> value when text outputing\n");
 	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
@@ -101,6 +102,15 @@ int jobList::parse(int argc, char **argv)
 			argNum++;
 			continue;
 		}
+		if (strcmp(argv[argNum], "--time-shift")==0 || strcmp(argv[argNum], "-z")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: time shift.\n");
+				return -1;
+			}
+			time_shift=atof(argv[argNum]);
+			argNum++;
+			continue;
+		}
 		if (strcmp(argv[argNum], "--need-trace")==0 || strcmp(argv[argNum], "-T")==0) {
 			need_trace=1;
 			if (argc == ++argNum) {
@@ -149,7 +159,6 @@ int jobList::parse(int argc, char **argv)
 			need_text_out=1;
 			output_text_filename=argv[argNum];
 			argNum++;
-			//printf("dot\n");
 			continue;
 		}
 		if (strcmp(argv[argNum], "--strikes-list")==0 || strcmp(argv[argNum], "-s")==0) {

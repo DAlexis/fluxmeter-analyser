@@ -5,10 +5,10 @@
 #include <sys/stat.h>
 
 #include <string>
-
+ 
 using namespace std;
 
-#define TEXT_BUFFER_SIZE	10000
+#define TEXT_BUFFER_SIZE	100000
 
 
 const double timeLen=24*3600;
@@ -22,9 +22,14 @@ struct dataLine {
 	char NL[2];
 };
 
+dataContainer::dataContainer(): time_shift(0), E(NULL), text_out_step(1)
+{
+}
+
 dataContainer::~dataContainer()
 {
-	delete[] E;
+	printf("dataContainer destructor");
+	if (E) delete[] E;
 }
 
 int dataContainer::binaryInput(string& filename)
@@ -184,10 +189,20 @@ int dataContainer::readFresh(string& fileName, string& inpFmt)
 
 long long dataContainer::time2index(double time)
 {
-	return (long long) (((float)time * dataLen)/timeLen);
+	return (long long) (( (float) (time-time_shift) * dataLen )/timeLen);
 }
 
 float dataContainer::index2time(long long ind)
+{
+	return ((float) ind * timeLen)/dataLen+time_shift;
+}
+
+long long dataContainer::timeInterval2index(double time)
+{
+	return (long long) (((float)time * dataLen)/timeLen);
+}
+
+float dataContainer::index2timeInterval(long long ind)
 {
 	return ((float) ind * timeLen)/dataLen;
 }
@@ -204,8 +219,8 @@ int dataContainer::textOutput(string& filename)
 	long long i;
 	int j=0, k=0;
 	char bigBuffer[TEXT_BUFFER_SIZE]="";
-	for (i=0; i<dataLen; i++) {
-		sprintf(buffer, "%f %f\n", index2time(i)+time_shift, E[i]);
+	for (i=0; i<dataLen; i+=text_out_step) {
+		sprintf(buffer, "%f %f\n", index2time(i), E[i]);
 		k=0;
 		while (buffer[k]!='\0') {
 			bigBuffer[j++]=buffer[k++];

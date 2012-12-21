@@ -3,6 +3,23 @@
 #include <string.h>
 #include <stdio.h>
 
+jobList::jobList():  need_average(false), need_trunc(false), need_rc(false), need_nl(false),
+				need_quantum_filtering(false), need_binary_input(false), need_fresh_input(false), 
+				need_text_out(false), need_binary_out(false),   need_strikes_detection(false),
+				need_strikes_stat(false), need_strikes_list(false),  
+				
+				need_simple(false), need_pattern(false), need_trace(false),
+				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), need_trunc_text_out(false), text_out_trunc(1), time_shift(0)
+{
+	//printf("JobList constructor\n");
+};
+
+jobList::~jobList()
+{
+	//printf("JobList destructor\n");
+};
+
+
 void jobList::printHelp()
 {
 	printf("\nflux-analysis <options> filename\n");
@@ -31,8 +48,7 @@ void jobList::printHelp()
 	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
 	printf("  --fresh-format, -F <format>      - set \"fresh file\" format. Default is \'ipf\'\n");
 	printf("	Now avaliable formats:\n");
-	printf("    ipf, myza\n");
-	
+	printf("    ipf, myza\n");	
 }
 
 

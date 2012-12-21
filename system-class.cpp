@@ -6,6 +6,7 @@ int systemClass::getCmdline(int argc, char** argv)
 {
 	int res=0;
 	res=job.parse(argc, argv);
+	data.text_out_step=job.text_out_trunc;
 	return res;	
 }
 

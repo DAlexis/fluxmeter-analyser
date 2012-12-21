@@ -76,8 +76,11 @@ int pattern::readSimplePattern(string filename)
 			fscanf(input, "%f", &stepValue);
 			continue;
 		}
-		if (strcmp(str, "needReverse")==0) {		
-			fscanf(input, "%d", &needReverse);
+		if (strcmp(str, "needReverse")==0) {	
+			int tmp=0;	
+			fscanf(input, "%d", &tmp);
+			if (tmp) needReverse=true;
+				else needReverse=false;
 			continue;
 		}
 		if (strcmp(str, "reverseTime")==0) {		
@@ -98,9 +101,9 @@ int pattern::readSimplePattern(string filename)
 
 bool pattern::check(dataContainer& E, long long index, bool print)
 {
-	int di=E.time2index(dt);
+	int di=E.timeInterval2index(dt);
 	if (di==0) di=1;
-	dt=E.index2time(di);
+	dt=E.index2timeInterval(di);
 	
 	long long i=index;
 	float df_dt=(E.E[i+di]-E.E[i])/dt;
@@ -113,7 +116,7 @@ bool pattern::check(dataContainer& E, long long index, bool print)
 
 	for (stage=0; stage<len; stage++) {
 
-		count_in_stage=E.time2index(time[stage]); // time is RELATIVE previous mark!
+		count_in_stage=E.timeInterval2index(time[stage]); // time is RELATIVE previous mark!
 
 
 		if (print) printf("stage=%d, time[stage]=%f, count_in_stage=%d\n",stage, time[stage],count_in_stage);
@@ -149,7 +152,7 @@ void pattern::resetFreeze()
 
 void pattern::countFreezeIndex(dataContainer& E)
 {
-	freezeDInd=E.time2index(freezeTime);
+	freezeDInd=E.timeInterval2index(freezeTime);
 }
 
 bool pattern::checkResConsFreeze(long long &ind, bool print)
@@ -171,12 +174,12 @@ bool pattern::checkResConsFreeze(long long &ind, bool print)
 
 bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 {
-	int di=E.time2index(dt);
+	int di=E.timeInterval2index(dt);
 	if (di==0) di=1;
-	dt=E.index2time(di);
+	dt=E.index2timeInterval(di);
 	
 	long long i=index;
-	long long maxi=E.time2index(preTime)+index;
+	long long maxi=E.timeInterval2index(preTime)+index;
 	
 	if (print) printf ("\nt=%f: ", E.index2time(index));
 	
@@ -193,7 +196,7 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 	float maxdiff=0, step_sign;
 	float first=E.E[i];
 	
-	maxi += E.time2index(stepTime);
+	maxi += E.timeInterval2index(stepTime);
 	for (;i<=maxi; i++)
 		if ( m_abs(E.E[i]-first) > maxdiff){
 			maxdiff=m_abs(E.E[i]-first);
@@ -208,7 +211,7 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 	
 	if (!needReverse) return true;
 	
-	maxi += E.time2index(reverseTime);
+	maxi += E.timeInterval2index(reverseTime);
 	for (;i<=maxi; i++)
 		if (step_sign != m_sign((E.E[i+di]-E.E[i])/dt) ) return true;
 	if (print) printf ("  Stage 3 completed\n");
@@ -230,7 +233,7 @@ int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method, float
 	for (j=0; j<len; j++) {
 		totalTime+=time[j];
 	}
-	long long maxi=E.dataLen-E.time2index(totalTime)-len;
+	long long maxi=E.dataLen-E.timeInterval2index(totalTime)-len;
 	long long i_trBeg=E.time2index(tr_beg), i_trEnd=E.time2index(tr_end);
 	bool need_tr=false;
 	
@@ -252,7 +255,7 @@ int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method, float
 		if (result) result=checkResConsFreeze(i, need_tr);
 		
 		if (result) {
-			outp.add(E.index2time(i)+E.time_shift, E.E[i]);
+			outp.add(E.index2time(i), E.E[i]);
 		}
 	}
 	return 0;
@@ -291,7 +294,7 @@ void rcData(dataContainer& E, float rc)
 {
 	//printf ("TODO\n");
 	long long i;
-	float diff_t=E.index2time(1);
+	float diff_t=E.index2timeInterval(1);
 	for (i=1; i<E.dataLen; i++) {
 		E.E[i]=E.E[i-1]+(E.E[i]-E.E[i-1])*diff_t/rc;
 	}	
@@ -318,7 +321,7 @@ float nlStep(float x, float par1, float par2)
 void nlF1(dataContainer& E, float par1, float par2)
 {
 	long long i;
-	float diff_t=E.index2time(1);
+	float diff_t=E.index2timeInterval(1);
 	for (i=1; i<E.dataLen; i++) {
 		E.E[i]=E.E[i-1]+ nlStep( (E.E[i]-E.E[i-1]), par1, par2) *diff_t;
 	}	

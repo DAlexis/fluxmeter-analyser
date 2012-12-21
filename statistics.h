@@ -19,7 +19,8 @@ public:
 	void add(float t, float E);
 	int print(string& filename);
 	int printHist(string& filename);
-	strikesClass():time_shift(0){}
+	strikesClass();
+	~strikesClass();
 };
 
 #endif

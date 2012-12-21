@@ -1,14 +1,5 @@
 // main.cpp
-
 #include <stdio.h>
-#include <string>
-#include <vector>
-
-
-#include <sys/types.h>
-#include <sys/stat.h>
-
-//#include "inpout.h"
 
 #include "system-class.h"
 
@@ -17,8 +8,8 @@ using namespace std;
 /////////////////////////////////////////////////////////////////// main
 int main(int argc, char* argv[])
 {
-	systemClass sys;	
 	int res=0;
+	systemClass sys;
 	
 	res=sys.getCmdline(argc, argv);
 	if (res) return res;
@@ -29,11 +20,13 @@ int main(int argc, char* argv[])
 	sys.process();
 	
 	res=sys.configDetector();
-	if (res) return res;
+	switch (res) {
+		case 0:	sys.detect(); break;
+		case 1: break;
+		default: return res;
+	}	
 	
-	sys.detect();
-	
-	res=sys.output();
+	res=sys.output(); 
 	if (res) return res;
 	
 	return 0;

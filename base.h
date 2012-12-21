@@ -15,6 +15,7 @@ public:
 	float time_shift;
 	float *E;
 	long long dataLen;
+	int text_out_step;
 	
 	int binaryInput(string& filename);
 	int binaryOutput(string& filename);
@@ -23,9 +24,13 @@ public:
 	
 	float index2time(long long ind);
 	long long time2index(double time);
+	float index2timeInterval(long long ind);
+	long long timeInterval2index(double time);
+	
 	
 	void setTimeShift(float shift);
-	
+	 
+	dataContainer();
 	~dataContainer();
 };
 

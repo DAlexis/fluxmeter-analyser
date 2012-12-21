@@ -2,6 +2,16 @@
 #include <stdio.h>
 
 
+strikesClass::strikesClass():time_shift(0)
+{
+	//printf ("Sclass constructor\n");
+}
+
+strikesClass::~strikesClass()
+{
+	//printf ("Sclass destructor\n");
+}
+
 void strikesClass::add(float t, float E)
 {
 	strikeStruct ss;
@@ -40,11 +50,12 @@ int strikesClass::printHist(string& filename)
 	
 	long int i;
 	int currMin=0;
-	long int time=0;
+	long int time=time_shift*60*60;
 	
 	for (i=0; i<60*24; i++, time+=60) {
 		
 		currMin=0;
+		
 		if (it!=strikes.end())
 			while (it->t >= time && it->t < time+60) {
 				currMin++;

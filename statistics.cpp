@@ -69,3 +69,17 @@ int strikesClass::printHist(string& filename)
 	fclose(output);
 	return 0;
 }
+
+int strikesClass::addReport(string& filename)
+{	
+	FILE *output=fopen(filename.c_str(), "w");
+	if (!output) {
+		printf("Can\'t open file %s for writing report!\n", filename.c_str());
+		return -2;
+	}
+	
+	fprintf(output, "%ld\n", strikes.size());
+	
+	fclose(output);
+	return 0;
+}

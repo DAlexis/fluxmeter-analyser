@@ -19,6 +19,7 @@ public:
 	void add(float t, float E);
 	int print(string& filename);
 	int printHist(string& filename);
+	int addReport(string& filename);
 	strikesClass();
 	~strikesClass();
 };

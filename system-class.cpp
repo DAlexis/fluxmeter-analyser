@@ -142,5 +142,11 @@ int systemClass::output()
 		res=data.textOutput(job.output_text_filename);
 		if (res) return res;
 	}
+	
+	if (job.need_report) {
+		res=strikes.addReport(job.report_filename);
+		if (res) return res;
+	}
+	
 	return 0;
 }

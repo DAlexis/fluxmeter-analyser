@@ -5,29 +5,45 @@
 
 dir=$1
 file=$2
+report=Report.fr
+faReport=report.txt
 
-filedsf=$file.dsf
-filedat=$file.dat
+if [ "$3" == "myza" ];
+then 
+	filedsf=$file.dsf
+	filedat=$file.dat
 
-fullname=$dir$filedsf
+	fullname=$dir$filedsf
 
-echo "  + Coping $fullname..."
-cp $fullname .
-echo "  + Running Faildows tool..."
-wine dsf2dat.exe $filedsf
+	echo "  + Coping $fullname..."
+	cp $fullname .
+	echo "  + Running Faildows tool..."
+	wine dsf2dat.exe $filedsf
 
-echo "  + Creating plain data..."
-./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005 -K 100 -z +4 >> log.log
+	echo "  + Creating plain data..."
+	./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005 -K 30 -z +4 >> log.log
 
-echo "  + Filtering..."
-./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt" -K 100 -z +4 >> log.log
+	echo "  + Filtering..."
+	./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt" -K 340 -z +4 -R $faReport  >> log.log
 
-echo "  + Plotting E(t) graph with gnuplot..."
-cat plot-graph.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
-gnuplot plot-current.gp >> log.log 2>&1
+	echo "  + Plotting E(t) graph with gnuplot..."
+	cat plot-graph.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+	gnuplot plot-current.gp >> log.log 2>&1
 
-echo "  + Plotting histogram with gnuplot..."
-cat plot-hist.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+	echo "  + Plotting histogram with gnuplot..."
+	cat plot-hist.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
 
-gnuplot plot-current.gp >> log.log 2>&1
-
+	gnuplot plot-current.gp >> log.log 2>&1
+	
+	count=`cat $faReport`
+	if [ "$count" !=  "0" ];
+	then
+		echo "In $file founded: $count" >> Report.fr
+	fi
+	
+elif [ "$3" == "ipf" ];
+then
+	echo "hh"
+else
+	echo "    Invalid file format specified."
+fi

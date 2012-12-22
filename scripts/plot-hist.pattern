@@ -1,0 +1,18 @@
+set terminal png
+set out "graphs/day-hist-#FILENAME#.png"
+
+set xdata time
+set timefmt "%s"
+set format x "%H:%M"
+
+set xtics rotate by 90  offset 0,-1.5 out nomirror
+
+#set xrange [14400:100800]
+
+set xlabel "Time, secs"
+set ylabel "Strikes per minute"
+
+
+set title "Histogram for #DATETIME#"
+
+plot "hist.txt" using 1:2 with boxes title "Strikes p. m."

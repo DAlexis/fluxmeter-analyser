@@ -6,10 +6,10 @@ echo "Starting log..." > log.log
 
 for line in `cat $listfile`
 do
-	echo "* Proceeding file $line:"
+	echo "* Proceeding file $line from Myza:"
 	echo "     " >> log.log
 	echo "For $line: " >> log.log
-	./proceed-file ./2012/Myza_2012/ $line
+	./proceed-file ./2012/Myza_2012/ $line myza
 	echo "* Cleaning..."
 	./clean
 done

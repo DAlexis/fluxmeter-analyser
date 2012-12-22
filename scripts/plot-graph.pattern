@@ -1,0 +1,18 @@
+set terminal png
+set out "graphs/day-graph-#FILENAME#.png"
+
+set xdata time
+set timefmt "%s"
+set format x "%H:%M"
+# "%H:%M:%S"
+
+set xtics rotate by 90  offset 0,-1.5 out nomirror
+
+set xlabel "Time"
+set ylabel "E, kV/m"
+
+set title "Fluxmeter data for #DATETIME#"
+
+plot "Myza-plain.txt" using 1:2 with lines title "Fluxmeter data"  
+
+# , "Myza.txt" using 1:2 with lines title "Filtered data", "strikes-myza.txt" using 1:2 title "Detected strikes"

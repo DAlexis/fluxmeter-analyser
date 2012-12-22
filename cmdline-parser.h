@@ -54,6 +54,9 @@ struct jobList
 	
 	float time_shift;
 	
+	bool need_report;
+	string report_filename;
+	
 	jobList();
 	~jobList();
 	

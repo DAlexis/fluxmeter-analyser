@@ -9,7 +9,9 @@ jobList::jobList():  need_average(false), need_trunc(false), need_rc(false), nee
 				need_strikes_stat(false), need_strikes_list(false),  
 				
 				need_simple(false), need_pattern(false), need_trace(false),
-				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), need_trunc_text_out(false), text_out_trunc(1), time_shift(0)
+				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), 
+				need_trunc_text_out(false), text_out_trunc(1), time_shift(0),
+				need_report(false)
 {
 	//printf("JobList constructor\n");
 };
@@ -47,10 +49,26 @@ void jobList::printHelp()
 	printf("  --trunc-text, -K <value>         - out only every <value> value when text outputing\n");
 	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
 	printf("  --fresh-format, -F <format>      - set \"fresh file\" format. Default is \'ipf\'\n");
+	printf("  --report, -R, <filename>         - add count of strikes if any to <filename>\n");
 	printf("	Now avaliable formats:\n");
 	printf("    ipf, myza\n");	
 }
 
+/*
+bool parseTextParameter(char* longName, char* shortName, char* noValMsg, bool& flag, string& parameter, char** argv, int argc, int& testNum)
+{
+	if (strcmp(argv[testNum], longName)==0 || strcmp(argv[testNum], shortName)==0) {
+		if (argc == ++testNum) {
+			printf(noValMsg);
+			return -1;
+		}
+		flag=true;
+		parameter=argv[testNum];
+		testNum++;
+		return true;
+	}
+	return false;
+}*/
 
 
 int jobList::parse(int argc, char **argv)
@@ -69,6 +87,16 @@ int jobList::parse(int argc, char **argv)
 			printHelp();
 			return 0;
 		}
+		if (strcmp(argv[argNum], "--report")==0 || strcmp(argv[argNum], "-R")==0) {
+			if (argc == ++argNum) {
+				printf("Expected: trucation value.\n");
+				return -1;
+			}
+			need_report=true;
+			report_filename =argv[argNum];
+			argNum++;
+			continue;
+		}
 		if (strcmp(argv[argNum], "--trunc-text")==0 || strcmp(argv[argNum], "-K")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: trucation value.\n");
@@ -79,6 +107,13 @@ int jobList::parse(int argc, char **argv)
 			argNum++;
 			continue;
 		}
+		/*
+		if ( parseTextParameter("--input-fresh", "-f",
+		                       "Expected: data file.\n",
+		                       need_fresh_input, fresh_input_filename,
+		                       argv, argc, argNum) )
+			continue;
+			*/
 		if (strcmp(argv[argNum], "--input-fresh")==0 || strcmp(argv[argNum], "-f")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: data file.\n");
@@ -217,7 +252,7 @@ int jobList::parse(int argc, char **argv)
 			argNum++;
 			continue;
 		}
-		if (strcmp(argv[argNum], "--rc")==0 || strcmp(argv[argNum], "-r")==0) {
+		if (strcmp(argv[argNum], "--rc")==0 || strcmp(argv[argNum], "-C")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: circuit time.\n");
 				return -1;

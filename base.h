@@ -5,7 +5,7 @@
 
 using namespace std; 
 
-#define MYZA_STR_COUNT		15000000
+#define MYZA_STR_COUNT		20000000
 
 class dataContainer {
 private:

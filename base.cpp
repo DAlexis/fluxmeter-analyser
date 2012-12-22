@@ -20,7 +20,7 @@ struct dataLine {
 	char comma2;
 	char strangeNumber;
 	char NL[2];
-};
+}; 
 
 dataContainer::dataContainer(): time_shift(0), E(NULL), text_out_step(1)
 {
@@ -207,6 +207,8 @@ float dataContainer::index2timeInterval(long long ind)
 	return ((float) ind * timeLen)/dataLen;
 }
 
+#define LINE_LEN_MAX	100
+
 int dataContainer::textOutput(string& filename)
 {
 	FILE *output=fopen(filename.c_str(), "wb");
@@ -215,22 +217,29 @@ int dataContainer::textOutput(string& filename)
 		return -2;
 	}
 	
-	char buffer[100];
+	char buffer[LINE_LEN_MAX];
 	long long i;
 	int j=0, k=0;
 	char bigBuffer[TEXT_BUFFER_SIZE]="";
+	
 	for (i=0; i<dataLen; i+=text_out_step) {
+		
 		sprintf(buffer, "%f %f\n", index2time(i), E[i]);
-		k=0;
-		while (buffer[k]!='\0') {
-			bigBuffer[j++]=buffer[k++];
+		
+		for(k=0; buffer[k]!='\0'; k++) {
+			bigBuffer[j++]=buffer[k];
 		}
-		if (j>TEXT_BUFFER_SIZE-100) {
+		
+		if (j > TEXT_BUFFER_SIZE-LINE_LEN_MAX) {
 			fwrite(bigBuffer, 1, j, output);
 			j=0;
-			//break;
 		}
 	}
+	
+	if (j != 0) {
+		fwrite(bigBuffer, 1, j, output);
+	}
+	
 	fclose(output);
 	printf("Done.\n");
 	return 0;

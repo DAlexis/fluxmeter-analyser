@@ -17,7 +17,7 @@ echo "  + Running Faildows tool..."
 wine dsf2dat.exe $filedsf
 
 echo "  + Creating plain data..."
-./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005 -K 100 -z +4>> log.log
+./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005 -K 100 -z +4 >> log.log
 
 echo "  + Filtering..."
 ./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt" -K 100 -z +4 >> log.log

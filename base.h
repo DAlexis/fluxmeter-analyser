@@ -2,15 +2,17 @@
 #define _BASE_H_
 
 #include <string>
+#include "unknown-with-options.h"
 
 using namespace std; 
 
 #define MYZA_STR_COUNT		20000000
 
-class dataContainer {
+class dataContainer : public unknownWithOptions
+{
 private:
 	int readStdTxt(string& fileName);
-	int readMyza(string& fileName, int ncols, int col); //  Temoprary :)
+	int readMyza(string& fileName, int ncols, int col); //  Temoprary :)	
 public:
 	float time_shift;
 	float *E;
@@ -33,17 +35,5 @@ public:
 	dataContainer();
 	~dataContainer();
 };
-
-/*
-struct dataContainer {
-	float *E;
-	long long dataLen;
-};
-
-void initTranslator(dataContainer& container);
-
-int time2index(double time);
-
-double index2time(long long index);*/
 
 #endif

@@ -5,6 +5,7 @@
 #include "analysis.h"
 #include "statistics.h"
 #include "cmdline-parser.h"
+#include "unknown-with-options.h"
 
 class systemClass
 {

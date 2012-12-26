@@ -4,6 +4,7 @@
 #include <string>
 #include "base.h"
 #include "statistics.h"
+#include "unknown-with-options.h"
 
 using namespace std;
 
@@ -12,7 +13,8 @@ using namespace std;
 #define AM_SIMPLE			1
 #define AM_PATTERN			2
 
-class pattern {
+class pattern  : public unknownWithOptions
+{
 private: 
 	float time[MAX_COND_LEN];
 	float dfdt[MAX_COND_LEN];

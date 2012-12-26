@@ -57,6 +57,9 @@ struct jobList
 	bool need_report;
 	string report_filename;
 	
+	bool use_limits;
+	float left_limit, right_limit;
+	
 	jobList();
 	~jobList();
 	

@@ -2,8 +2,10 @@
 #define _STATISTICS_H_
 
 #include "base.h"
+#include "unknown-with-options.h"
 #include <vector>
 #include <string>
+
 
 struct strikeStruct {
 	float t, E;
@@ -11,7 +13,8 @@ struct strikeStruct {
 
 typedef std::vector<strikeStruct> st_vec;
 
-class strikesClass {
+class strikesClass : public unknownWithOptions
+{
 private:
 	st_vec strikes;
 public:

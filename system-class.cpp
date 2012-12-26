@@ -91,6 +91,11 @@ int systemClass::configDetector()
 		printf("No detection option enabed.\n");
 		return 1;
 	}
+	
+	if (job.use_limits) {
+		strikes.setLimits(job.left_limit, job.right_limit);
+		data.setLimits(job.left_limit, job.right_limit);
+	}
 	return 0;
 }
 

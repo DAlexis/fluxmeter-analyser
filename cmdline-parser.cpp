@@ -11,7 +11,7 @@ jobList::jobList():  need_average(false), need_trunc(false), need_rc(false), nee
 				need_simple(false), need_pattern(false), need_trace(false),
 				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), 
 				need_trunc_text_out(false), text_out_trunc(1), time_shift(0),
-				need_report(false)
+				need_report(false), use_limits(false), left_limit(0), right_limit(86400)
 {
 	//printf("JobList constructor\n");
 };
@@ -49,9 +49,10 @@ void jobList::printHelp()
 	printf("  --trunc-text, -K <value>         - out only every <value> value when text outputing\n");
 	printf("  --need-trace, -T <from> <to>     - pattern debug output\n");
 	printf("  --fresh-format, -F <format>      - set \"fresh file\" format. Default is \'ipf\'\n");
-	printf("  --report, -R, <filename>         - add count of strikes if any to <filename>\n");
 	printf("	Now avaliable formats:\n");
 	printf("    ipf, myza\n");	
+	printf("  --report, -R, <filename>         - add count of strikes to <filename>\n");
+	printf("  --limits, -l, <left> <right>     - output only in limits\n");
 }
 
 /*
@@ -189,6 +190,21 @@ int jobList::parse(int argc, char **argv)
 				return -1;
 			}			
 			par2=atof(argv[argNum]);
+			argNum++;
+			continue;
+		}
+		if (strcmp(argv[argNum], "--limits")==0 || strcmp(argv[argNum], "-l")==0) {
+			use_limits=true;
+			if (argc == ++argNum) {
+				printf("Expected: left limit.\n");
+				return -1;
+			}			
+			left_limit=atof(argv[argNum]);
+			if (argc == ++argNum) {
+				printf("Expected: right limit.\n");
+				return -1;
+			}			
+			right_limit=atof(argv[argNum]);
 			argNum++;
 			continue;
 		}

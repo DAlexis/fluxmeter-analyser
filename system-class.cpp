@@ -35,6 +35,13 @@ void systemClass::process()
 		data.setTimeShift(job.time_shift);
 		strikes.time_shift=job.time_shift;
 	}
+	if (job.use_limits) {
+		printf("Using limits %f H --- %f H.\n", job.left_limit, job.right_limit);
+		/*strikes.setLimits( job.left_limit*3600-job.time_shift, job.right_limit*3600-job.time_shift );
+		data.setLimits( job.left_limit*3600-job.time_shift, job.right_limit*3600-job.time_shift );*/
+		strikes.setLimits( job.left_limit*3600, job.right_limit*3600);
+		data.setLimits( job.left_limit*3600, job.right_limit*3600 );
+	}
 	
 	if (job.need_renorm) {
 		printf("Renorming data with k=%f... ", job.renorm_k);
@@ -90,11 +97,6 @@ int systemClass::configDetector()
 	} else {
 		printf("No detection option enabed.\n");
 		return 1;
-	}
-	
-	if (job.use_limits) {
-		strikes.setLimits(job.left_limit, job.right_limit);
-		data.setLimits(job.left_limit, job.right_limit);
 	}
 	return 0;
 }

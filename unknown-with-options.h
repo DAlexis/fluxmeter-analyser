@@ -10,6 +10,7 @@ public:
 	unknownWithOptions();
 	void setLimits(float left, float right);
 	void noLimits();
+	bool needContinue(float t);
 };
 
 #endif

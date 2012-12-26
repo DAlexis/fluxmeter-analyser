@@ -30,7 +30,8 @@ int strikesClass::print(std::string& filename)
 	st_vec::iterator it;
 	
 	for (it = strikes.begin(); it != strikes.end(); it++) {
-		fprintf(output, "%f %f\n", it->t, it->E);
+		if (!needContinue(it->t))
+			fprintf(output, "%f %f\n", it->t, it->E);
 	}
 	
 	printf("Done.\n");
@@ -57,12 +58,16 @@ int strikesClass::printHist(string& filename)
 		currMin=0;
 		
 		if (it!=strikes.end())
+		{
 			while (it->t >= time && it->t < time+60) {
 				currMin++;
 				it++;
 				if (it==strikes.end()) break;
 			}
-		fprintf(output, "%ld %d\n", time, currMin);
+		}
+		
+		if (!needContinue(time))
+			fprintf(output, "%ld %d\n", time, currMin);
 	}
 	
 	printf("Done.\n");

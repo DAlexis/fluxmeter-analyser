@@ -222,7 +222,16 @@ int dataContainer::textOutput(string& filename)
 	int j=0, k=0;
 	char bigBuffer[TEXT_BUFFER_SIZE]="";
 	
-	for (i=0; i<dataLen; i+=text_out_step) {
+	long long iLeft=0,  iRight=dataLen;
+	/*
+	if (use_limits) {
+		iLeft=time2index(left_limit);
+		iRight=time2index(right_limit);
+	}*/
+	
+	for (i=iLeft; i<iRight; i+=text_out_step) {
+		
+		if (needContinue(index2time(i))) continue;
 		
 		sprintf(buffer, "%f %f\n", index2time(i), E[i]);
 		

@@ -15,3 +15,10 @@ void unknownWithOptions::noLimits()
 {
 	use_limits=false;
 }
+
+bool unknownWithOptions::needContinue(float t)
+{
+	if (!use_limits) return false;
+	if (t < left_limit || t > right_limit) return true;
+	return false;
+}

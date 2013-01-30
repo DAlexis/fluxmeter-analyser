@@ -1,6 +1,6 @@
 #!/bin/bash
 
-listfile=list.lst
+listfile=myza.lst
 
 echo "Starting log..." > log.log
 

@@ -28,7 +28,6 @@ dataContainer::dataContainer(): time_shift(0), E(NULL), text_out_step(1)
 
 dataContainer::~dataContainer()
 {
-	printf("dataContainer destructor");
 	if (E) delete[] E;
 }
 
@@ -73,7 +72,7 @@ int dataContainer::binaryOutput(string& filename)
 	return 0;
 }
 
-int dataContainer::readStdTxt(string& fileName)
+int dataContainer::readEFM(string& fileName)
 {
 	struct stat inpStat;
 	printf("Reading fresh data from %s...\n", fileName.c_str());
@@ -112,7 +111,7 @@ int dataContainer::readStdTxt(string& fileName)
 }
 
 
-int dataContainer::readMyza(string& fileName, int ncols, int col)
+int dataContainer::readDAT(string& fileName, int ncols, int col)
 {
 	struct stat inpStat;
 	printf("Reading fresh data from %s...\n", fileName.c_str());
@@ -177,11 +176,11 @@ int dataContainer::readMyza(string& fileName, int ncols, int col)
 
 int dataContainer::readFresh(string& fileName, string& inpFmt)
 {
-	if (inpFmt=="myza") {
-		return readMyza(fileName, 2,2);
-	} else if (inpFmt=="ipf") {
+	if (inpFmt=="dat") {
+		return readDAT(fileName, 2,2);
+	} else if (inpFmt=="efm") {
 		// Reading data in 00:00:00,+0.09,0-like format
-		return readStdTxt(fileName);
+		return readEFM(fileName);
 	}
 	printf("Unknown file format \"%s\"", inpFmt.c_str());
 	return -2;

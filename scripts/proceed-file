@@ -1,12 +1,17 @@
 #!/bin/bash
 
-#dir="./2012/Myza_2012/"
-#file="Myza_2012_06_12__00_00_00"
+#echo "Usage: proceed-file <dir> <file-without-extension> <format>"
 
 dir=$1
 file=$2
 report=Report.fr
 faReport=report.txt
+
+if [ "$4" == "limits" ];
+then
+	limitsOption="-l $5 $6"
+	echo "  i Enabling option $limitsOption"
+fi
 
 if [ "$3" == "myza" ];
 then 
@@ -21,10 +26,10 @@ then
 	wine dsf2dat.exe $filedsf
 
 	echo "  + Creating plain data..."
-	./flux-analysis -f $filedat -F myza -t Myza-plain.txt -u 6 -o Myza.bin -r -0.005 -K 30 -z +4 >> log.log
+	./flux-analysis -f $filedat -F myza -t "DATA-plain.txt" $limitsOption -u 6 -o "DATA.bin" -r -0.005 -K 30 -z +4 >> log.log
 
 	echo "  + Filtering..."
-	./flux-analysis -i Myza.bin -t Myza.txt -n 1.8 2 -S "config-myza.cfg" -s "strikes-myza.txt" -M "hist.txt" -K 340 -z +4 -R $faReport  >> log.log
+	./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -M "hist.txt" -K 340 -z +4 -R $faReport  $limitsOption >> log.log
 
 	echo "  + Plotting E(t) graph with gnuplot..."
 	cat plot-graph.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp

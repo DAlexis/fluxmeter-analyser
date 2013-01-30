@@ -13,6 +13,6 @@ set ylabel "E, kV/m"
 
 set title "Fluxmeter data for #DATETIME#"
 
-plot "Myza-plain.txt" using 1:2 with lines title "Fluxmeter data"  
+plot "DATA-plain.txt" using 1:2 with lines title "Fluxmeter data", "DATA-strikes.txt" using 1:2 title "Thunderbolts"
 
 # , "Myza.txt" using 1:2 with lines title "Filtered data", "strikes-myza.txt" using 1:2 title "Detected strikes"

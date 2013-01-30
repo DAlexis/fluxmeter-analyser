@@ -11,8 +11,8 @@ using namespace std;
 class dataContainer : public unknownWithOptions
 {
 private:
-	int readStdTxt(string& fileName);
-	int readMyza(string& fileName, int ncols, int col); //  Temoprary :)	
+	int readEFM(string& fileName);
+	int readDAT(string& fileName, int ncols, int col); //  Temoprary :)	
 public:
 	float time_shift;
 	float *E;

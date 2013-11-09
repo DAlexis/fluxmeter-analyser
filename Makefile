@@ -1,4 +1,4 @@
-CXXFLAGS=-Wall
+CXXFLAGS += -Wall -g -O0
 
 all: flux-analysis install
 
@@ -11,9 +11,11 @@ clean:
 	rm base.o
 	rm statistics.o
 	rm system-class.o
-	rm ~/Science/flux-analysis/flux-analysis
 install: 
+	mkdir -p ~/Science/flux-analysis/graphs
 	cp ./flux-analysis ~/Science/flux-analysis
+	cp ./scripts/* ~/Science/flux-analysis
+	cp ./3rdparty/* ~/Science/flux-analysis
 myza:
 	./flux-analysis -f Myza_2012_06_02__00_00_00.dat -t Myza.txt -F myza -u 6 -n 1.8 2
 myza1:

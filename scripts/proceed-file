@@ -26,7 +26,7 @@ then
 	wine dsf2dat.exe $filedsf
 
 	echo "  + Creating plain data..."
-	./flux-analysis -f $filedat -F myza -t "DATA-plain.txt" $limitsOption -u 6 -o "DATA.bin" -r -0.005 -K 30 -z +4 >> log.log
+	./flux-analysis -f $filedat -F dat -t "DATA-plain.txt" $limitsOption -u 6 -o "DATA.bin" -r -0.005 -K 30 -z +4 >> log.log
 
 	echo "  + Filtering..."
 	./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -M "hist.txt" -K 340 -z +4 -R $faReport  $limitsOption >> log.log

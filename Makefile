@@ -5,12 +5,8 @@ all: flux-analysis install
 flux-analysis: main.o analysis.o base.o statistics.cpp cmdline-parser.o system-class.o unknown-with-options.o
 	g++ -Wall -o $@ $^ 
 clean:
-	rm flux-analysis
-	rm main.o
-	rm analysis.o
-	rm base.o
-	rm statistics.o
-	rm system-class.o
+	rm -f *.o flux-analysis
+
 install: 
 	mkdir -p ~/Science/flux-analysis/graphs
 	cp ./flux-analysis ~/Science/flux-analysis

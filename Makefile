@@ -1,4 +1,4 @@
-CXXFLAGS += -Wall -g -O0
+CXXFLAGS += -Wall -g -O3
 
 all: flux-analysis install
 

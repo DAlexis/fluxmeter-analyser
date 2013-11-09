@@ -193,7 +193,7 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 	if (print) printf ("  Stage 1 completed\n");
 	
 	//stage2
-	float maxdiff=0, step_sign;
+	float maxdiff=0, step_sign=0;
 	float first=E.E[i];
 	
 	maxi += E.timeInterval2index(stepTime);

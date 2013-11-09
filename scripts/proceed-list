@@ -18,6 +18,6 @@ do
         exit -1
     fi
     echo "* Cleaning..."
-    rm -f *.dsf *.dat *.bin *.gp DATA-plain.txt DATA-strikes.txt
+    rm -f *.dsf *.dat *.bin *.gp DATA-plain.txt DATA-strikes.txt DATA-filtered.txt
 done
 

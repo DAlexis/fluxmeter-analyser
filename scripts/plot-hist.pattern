@@ -1,5 +1,5 @@
 set terminal png
-set out "graphs/day-hist-#FILENAME#.png"
+set out "graphs/day-#FILENAME#-hist.png"
 
 set xdata time
 set timefmt "%s"

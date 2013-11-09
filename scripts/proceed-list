@@ -1,16 +1,23 @@
 #!/bin/bash
 
-listfile=myza.lst
+directory=$1
+format=$2
+listfile=$3
 
-echo "Starting log..." > log.log
+echo "Starting log at `date`." | tee log.log
 
 for line in `cat $listfile`
 do
-	echo "* Proceeding file $line from Myza:"
-	echo "     " >> log.log
-	echo "For $line: " >> log.log
-	./proceed-file ./2012/Myza_2012/ $line myza
-	echo "* Cleaning..."
-	./clean
+    echo "* Proceeding file $line from Myza:" | tee -a log.log
+    echo "----------------------------------" | tee -a log.log
+    echo "For $line: " | tee -a log.log
+    ./proceed-file $directory $line $format
+    if [ "$?" != "0" ];
+    then
+        echo "! Stopping." | tee -a log.log
+        exit -1
+    fi
+    echo "* Cleaning..."
+    rm -f *.dsf *.dat *.bin *.gp DATA-plain.txt DATA-strikes.txt
 done
 

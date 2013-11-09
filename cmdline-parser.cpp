@@ -9,7 +9,7 @@ jobList::jobList():  need_average(false), need_trunc(false), need_rc(false), nee
 				need_strikes_stat(false), need_strikes_list(false),  
 				
 				need_simple(false), need_pattern(false), need_trace(false),
-				fresh_file_format("ipf"), need_renorm(false), renorm_k(1), 
+				fresh_file_format("efm"), need_renorm(false), renorm_k(1), 
 				need_trunc_text_out(false), text_out_trunc(1), time_shift(0),
 				need_report(false), use_limits(false), left_limit(0), right_limit(86400)
 {

@@ -15,6 +15,7 @@ install:
 	mkdir -p ~/Science/flux-analysis/graphs
 	cp ./flux-analysis ~/Science/flux-analysis
 	cp ./scripts/* ~/Science/flux-analysis
+	cp ./configs/* ~/Science/flux-analysis
 	cp ./3rdparty/* ~/Science/flux-analysis
 myza:
 	./flux-analysis -f Myza_2012_06_02__00_00_00.dat -t Myza.txt -F myza -u 6 -n 1.8 2

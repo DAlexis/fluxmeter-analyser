@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 
 #include <string>
+#include <vector>
  
 using namespace std;
 
@@ -12,6 +13,8 @@ using namespace std;
 
 
 const double timeLen=24*3600;
+
+#pragma pack(push, 1)
 
 struct dataLine {
 	char time[8];
@@ -21,6 +24,8 @@ struct dataLine {
 	char strangeNumber;
 	char NL[2];
 }; 
+
+#pragma pack(pop)
 
 dataContainer::dataContainer(): time_shift(0), E(NULL), text_out_step(1)
 {
@@ -75,15 +80,65 @@ int dataContainer::binaryOutput(string& filename)
 int dataContainer::readEFM(string& fileName)
 {
 	struct stat inpStat;
-	printf("Reading fresh data from %s...\n", fileName.c_str());
+	printf("Reading efm data from %s...\n", fileName.c_str());
 	if (stat(fileName.c_str(), &inpStat)==-1) {
 		printf("Can\'t get size for %s.\n", fileName.c_str());
 		return -2;
 	}
 	
+    long long fileSize=inpStat.st_size;
+    printf ("Size is: %lld, ", fileSize);
+    
+    
+    char* buffer = new char[fileSize];
+    FILE *input=fopen(fileName.c_str(), "rb");
+    long long readed=fread(buffer, sizeof(char), fileSize, input);
+    fclose(input);
+    printf ("readed bytes: %lld, ", readed);
+    dataLen = 0;
+    vector<double> newE;
+    for (long long i=0; i<readed;)
+    {
+        // if some empty lines
+        while (i<readed && (buffer[i] == 13 || buffer[i] == 10)) i++;
+        if (i == readed) break;
+        // Skipping time 
+        while (i<readed && buffer[i] != ',') i++;
+        if (i >= readed) break;
+        dataLen++;
+        // Skip comma
+        i++;
+        double sign = 1;
+        if (buffer[i] == '-') sign = -1;
+        double nextE=0;
+        while (buffer[++i] != '.') {
+            nextE = nextE*10 + buffer[i] - '0';
+        }
+        // Skip dot
+        double mul = 0.1;
+        while (buffer[++i] != ',') {
+            nextE += mul*(buffer[i] - '0');
+            mul /= 10.0;
+        }
+        nextE *= sign;
+        newE.push_back(nextE);
+        // Waiting for eol
+        while (i<readed && buffer[i] != 13 && buffer[i] != 10) i++;
+        if (i == readed) break;
+    }
+    printf("readed records: %lld.\n", dataLen);
+    
+    E=new float[dataLen];
+    for (int i=0; i<dataLen; i++)
+    {
+        E[i] = newE[i];
+    }
+    
+    /*
 	long long fileSize=inpStat.st_size, linesCount=(long long) fileSize/sizeof(dataLine);
 	printf ("Size is: %lld, lines: %lld\n", fileSize, linesCount);
 
+    
 	dataLine* data=new dataLine[(long long) fileSize/sizeof(dataLine)+10];
 	FILE *input=fopen(fileName.c_str(), "rb");
 	if (!input) {
@@ -107,6 +162,7 @@ int dataContainer::readEFM(string& fileName)
 	}
 	delete[] data;
 	//printf("%f %f\n", index2time(0), E[0]);
+    * */
 	return 0;
 }
 

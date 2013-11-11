@@ -60,7 +60,7 @@ then
     cp $fullname .
     
     echo "  + Creating plain data..." | tee -a log.log
-    ./flux-analysis -f $fileefm -F efm -t "DATA-plain.txt" $limitsOption -o "DATA.bin" -z +4 -K 3
+    ./flux-analysis -f $fileefm -F efm -t "DATA-plain.txt" $limitsOption -o "DATA.bin" -r 4 -z +4 -K 3
     
     echo "  + Filtering and detecting..." | tee -a log.log
     ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -K 3 -z +4 -R $faReport  $limitsOption | tee -a log.log

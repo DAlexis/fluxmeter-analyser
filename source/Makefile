@@ -16,8 +16,6 @@ install_dir = ~/Science/flux-analysis
 
 post_build = install
 
-LDFLAGS += -lmysqlclient -lboost_date_time -lboost_program_options
-
 include $(HOME_DIR)/Makefile.inc
 
 install:

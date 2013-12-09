@@ -70,17 +70,18 @@ else
     exit
 fi
 
-echo "  + Plotting E(t) graph with gnuplot..." | tee -a log.log
-cat plot-graph.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
-gnuplot plot-current.gp 2>&1 | tee -a log.log
-
-echo "  + Plotting histogram with gnuplot..." | tee -a log.log
-cat plot-hist.pattern | sed s/"#FILENAME#"/$file/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
-
-gnuplot plot-current.gp 2>&1 | tee -a log.log
-
 count=`cat $faReport`
 if [ "$count" !=  "0" ];
 then
     echo "In $file founded: $count" >> Report.txt
+    fileNameInsertion="-DETECTED-$count"
 fi
+
+echo "  + Plotting E(t) graph with gnuplot..." | tee -a log.log
+cat plot-graph.pattern | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+gnuplot plot-current.gp 2>&1 | tee -a log.log
+
+echo "  + Plotting histogram with gnuplot..." | tee -a log.log
+cat plot-hist.pattern | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+
+gnuplot plot-current.gp 2>&1 | tee -a log.log

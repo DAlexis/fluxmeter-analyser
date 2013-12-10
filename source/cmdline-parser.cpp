@@ -6,7 +6,7 @@
 jobList::jobList():  need_average(false), need_trunc(false), need_rc(false), need_nl(false),
 				need_quantum_filtering(false), need_binary_input(false), need_fresh_input(false), 
 				need_text_out(false), need_binary_out(false),   need_strikes_detection(false),
-				need_strikes_stat(false), need_strike_durations_stat(false), need_strikes_list(false),  
+				need_strikes_stat(false), need_strike_intervals_stat(false), need_strikes_list(false),  
 				
 				need_simple(false), need_pattern(false), need_trace(false),
 				fresh_file_format("efm"), need_renorm(false), renorm_k(1), 
@@ -231,13 +231,13 @@ int jobList::parse(int argc, char **argv)
 			argNum++;
 			continue;
 		}
-		if (strcmp(argv[argNum], "--strike-duration-stat")==0 || strcmp(argv[argNum], "-D")==0) {
+		if (strcmp(argv[argNum], "--strike-interval-stat")==0 || strcmp(argv[argNum], "-D")==0) {
 			if (argc == ++argNum) {
 				printf("Expected: filename.\n");
 				return -1;
 			}
-			need_strike_durations_stat=1;
-			output_duration_stat_filename=argv[argNum];
+			need_strike_intervals_stat=1;
+			output_interval_stat_filename=argv[argNum];
 			argNum++;
 			continue;
 		}

@@ -76,7 +76,7 @@ int DetectedStrikesContainer::printHist(string& filename)
 	return 0;
 }
 
-int DetectedStrikesContainer::printDirationHistogram(string& filename, double timestep, bool maxIntervalSpecified, double maxInterval)
+int DetectedStrikesContainer::printIntervalsHistogram(string& filename, double timestep, bool maxIntervalSpecified, double maxInterval)
 {
 	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {

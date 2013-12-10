@@ -139,9 +139,9 @@ int systemClass::output()
 		if (res) return res;
 	}
 	
-	if (job.need_strike_durations_stat) {
-		printf("Writing strike duration histoghram to %s... ", job.output_duration_stat_filename.c_str());
-		res=strikes.printDirationHistogram(job.output_duration_stat_filename, 10, true, 120);
+	if (job.need_strike_intervals_stat) {
+		printf("Writing strike interval histoghram to %s... ", job.output_interval_stat_filename.c_str());
+		res=strikes.printIntervalsHistogram(job.output_interval_stat_filename, 10, true, 120);
 		if (res) return res;
 	}
 	

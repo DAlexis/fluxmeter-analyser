@@ -8,7 +8,7 @@ using namespace std;
 
 #define MYZA_STR_COUNT		20000000
 
-class dataContainer : public unknownWithOptions
+class dataContainer : public LeftRightLimitsUser
 {
 private:
 	int readEFM(string& fileName);

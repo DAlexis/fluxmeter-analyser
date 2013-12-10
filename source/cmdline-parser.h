@@ -34,8 +34,8 @@ struct jobList
 	bool need_strikes_stat;
 	string output_stat_filename;
 	
-	bool need_strike_durations_stat;
-	string output_duration_stat_filename;
+	bool need_strike_intervals_stat;
+	string output_interval_stat_filename;
 	
 	string pattern;
 	bool need_strikes_list;

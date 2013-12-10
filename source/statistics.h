@@ -13,7 +13,7 @@ struct StrikeMark {
 
 typedef std::vector<StrikeMark> st_vec;
 
-class DetectedStrikesContainer : public unknownWithOptions
+class DetectedStrikesContainer : public LeftRightLimitsUser
 {
 private:
 	st_vec strikes;
@@ -22,7 +22,7 @@ public:
 	void add(float t, float E);
 	int print(string& filename);
 	int printHist(string& filename);
-	int printDirationHistogram(string& filename, double timestep, bool maxIntervalSpecified = false, double maxInterval = 0);
+	int printIntervalsHistogram(string& filename, double timestep, bool maxIntervalSpecified = false, double maxInterval = 0);
 	int addReport(string& filename);
 	DetectedStrikesContainer();
 	~DetectedStrikesContainer();

@@ -134,36 +134,7 @@ int dataContainer::readEFM(string& fileName)
         E[i] = newE[i];
     }
     
-    /*
-	long long fileSize=inpStat.st_size, linesCount=(long long) fileSize/sizeof(dataLine);
-	printf ("Size is: %lld, lines: %lld\n", fileSize, linesCount);
-
-    
-	dataLine* data=new dataLine[(long long) fileSize/sizeof(dataLine)+10];
-	FILE *input=fopen(fileName.c_str(), "rb");
-	if (!input) {
-		printf("Can\'t open input file for reading\n");
-		return -2;
-	}	
-	long long readed=fread(data, sizeof(dataLine), linesCount, input);
-	dataLen=readed;
-	printf("Successfully readed %lld of %lld lines\n", readed, linesCount);
-	fclose(input);
-	if (dataLen==0) {
-		printf("No data was readed!\n");
-		return -2;
-	}
-	
-	E=new float[readed];
-	long long i;
-	for (i=0; i<dataLen; i++) {
-		E[i]=(data[i].E[1]-'0')+(data[i].E[3]-'0')/10.0+(data[i].E[4]-'0')/100.0;
-		if (data[i].E[0]=='-') E[i]=-E[i];
-	}
-	delete[] data;
-	//printf("%f %f\n", index2time(0), E[0]);
-    * */
-	return 0;
+    return 0;
 }
 
 
@@ -233,7 +204,7 @@ int dataContainer::readDAT(string& fileName, int ncols, int col)
 int dataContainer::readFresh(string& fileName, string& inpFmt)
 {
 	if (inpFmt=="dat") {
-		return readDAT(fileName, 2,2);
+		return readDAT(fileName, 2,2); /// @todo [Hi] number of columns and column to read from should be configurable!
 	} else if (inpFmt=="efm") {
 		// Reading data in 00:00:00,+0.09,0-like format
 		return readEFM(fileName);

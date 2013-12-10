@@ -13,7 +13,7 @@ using namespace std;
 #define AM_SIMPLE			1
 #define AM_PATTERN			2
 
-class pattern  : public unknownWithOptions
+class pattern  : public LeftRightLimitsUser
 {
 private: 
 	float time[MAX_COND_LEN];

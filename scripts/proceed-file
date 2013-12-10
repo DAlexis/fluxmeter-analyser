@@ -46,7 +46,7 @@ then
     checkExitCode
     
     echo "  + Filtering and detecting..." | tee -a log.log
-    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -t "DATA-filtered.txt" -M "hist.txt" -D "duration-hist.txt" -K 340 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -t "DATA-filtered.txt" -M "hist.txt" -D "interval-hist.txt" -K 340 -z +4 -R $faReport  $limitsOption | tee -a log.log
 
     checkExitCode
     
@@ -66,7 +66,7 @@ then
     checkExitCode
     
     echo "  + Filtering and detecting..." | tee -a log.log
-    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -D "duration-hist.txt" -K 3 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -D "interval-hist.txt" -K 3 -z +4 -R $faReport  $limitsOption | tee -a log.log
     
     checkExitCode
 else

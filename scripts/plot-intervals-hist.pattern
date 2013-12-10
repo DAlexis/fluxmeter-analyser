@@ -11,4 +11,4 @@ set ylabel "Strikes per minute"
 
 set title "Histogram for #DATETIME#"
 
-plot "duration-hist.txt" using 1:2 with fs title "Strikes p. m."
+plot "interval-hist.txt" using 1:2 with fs title "Strikes p. m."

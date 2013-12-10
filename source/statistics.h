@@ -22,6 +22,7 @@ public:
 	void add(float t, float E);
 	int print(string& filename);
 	int printHist(string& filename);
+	int printDirationHistogram(string& filename, double timestep, bool maxIntervalSpecified = false, double maxInterval = 0);
 	int addReport(string& filename);
 	DetectedStrikesContainer();
 	~DetectedStrikesContainer();

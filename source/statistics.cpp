@@ -1,5 +1,6 @@
 #include "statistics.h"
 #include <stdio.h>
+#include <string.h>
 
 
 DetectedStrikesContainer::DetectedStrikesContainer():time_shift(0)
@@ -70,8 +71,60 @@ int DetectedStrikesContainer::printHist(string& filename)
 			fprintf(output, "%ld %d\n", time, currMin);
 	}
 	
-	printf("Done.\n");
 	fclose(output);
+	printf("Done.\n");
+	return 0;
+}
+
+int DetectedStrikesContainer::printDirationHistogram(string& filename, double timestep, bool maxIntervalSpecified, double maxInterval)
+{
+	FILE *output=fopen(filename.c_str(), "w");
+	if (!output) {
+		printf("Can\'t open file %s for writing histogram!\n", filename.c_str());
+		return -2;
+	}
+	// Calculating histogram
+	int *histogram = NULL;
+	unsigned int count = 0;
+	// Determining max interval
+	auto it = strikes.begin();
+	double lastTime = it++->t;
+	double maxTimeInterval = 0;
+	for (; it != strikes.end(); it++)
+	{
+		double timeInterval = it->t - lastTime;
+		lastTime = it->t;
+		if (maxTimeInterval < timeInterval) maxTimeInterval = timeInterval;
+	}
+	count = maxTimeInterval/timestep + 1;
+	if (maxIntervalSpecified)
+	{
+		unsigned int maxCount = maxInterval/timestep;
+		if (maxCount < count)
+			count = maxCount;
+	}
+	
+	histogram = new int[count];
+	memset(histogram, 0, sizeof(int)*count);
+	it = strikes.begin();
+	lastTime = it++->t;
+	for (; it != strikes.end(); it++)
+	{
+		double timeInterval = it->t - lastTime;
+		lastTime = it->t;
+		unsigned int index = timeInterval / timestep;
+		if (index < count)
+			histogram[index]++;
+	}
+	
+	for (unsigned int i=0; i<count; i++)
+	{
+		fprintf(output, "%lf %d\n", i*timestep, histogram[i]);
+	}
+	
+	if (histogram) delete[] histogram;
+	fclose(output);
+	printf("Done.\n");
 	return 0;
 }
 

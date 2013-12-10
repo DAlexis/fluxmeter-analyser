@@ -46,25 +46,29 @@ then
     checkExitCode
     
     echo "  + Filtering and detecting..." | tee -a log.log
-    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -t "DATA-filtered.txt" -M "hist.txt" -K 340 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -t "DATA-filtered.txt" -M "hist.txt" -D "duration-hist.txt" -K 340 -z +4 -R $faReport  $limitsOption | tee -a log.log
 
     checkExitCode
     
 elif [ "$3" == "efm" ];
 then
     fileefm=$file.efm
-
     fullname=$dir/$fileefm
 
     echo "  + Coping $fullname..." | tee -a log.log
     cp $fullname .
     
+    checkExitCode
+    
     echo "  + Creating plain data..." | tee -a log.log
     ./flux-analysis -f $fileefm -F efm -t "DATA-plain.txt" $limitsOption -o "DATA.bin" -r 4 -z +4 -K 3
     
-    echo "  + Filtering and detecting..." | tee -a log.log
-    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -K 3 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    checkExitCode
     
+    echo "  + Filtering and detecting..." | tee -a log.log
+    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -D "duration-hist.txt" -K 3 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    
+    checkExitCode
 else
     echo "    Invalid file format specified."
     exit
@@ -83,5 +87,8 @@ gnuplot plot-current.gp 2>&1 | tee -a log.log
 
 echo "  + Plotting histogram with gnuplot..." | tee -a log.log
 cat plot-hist.pattern | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+gnuplot plot-current.gp 2>&1 | tee -a log.log
 
+echo "  + Plotting intervals histogram with gnuplot..." | tee -a log.log
+cat plot-intervals-hist.pattern | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
 gnuplot plot-current.gp 2>&1 | tee -a log.log

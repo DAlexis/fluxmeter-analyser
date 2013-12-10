@@ -134,8 +134,14 @@ int systemClass::output()
 	}
 	
 	if (job.need_strikes_stat) {
-		printf("Writing strikes hist to %s... ", job.output_stat_filename.c_str());
+		printf("Writing strikes per minute histoghram to %s... ", job.output_stat_filename.c_str());
 		res=strikes.printHist(job.output_stat_filename);
+		if (res) return res;
+	}
+	
+	if (job.need_strike_durations_stat) {
+		printf("Writing strike duration histoghram to %s... ", job.output_duration_stat_filename.c_str());
+		res=strikes.printDirationHistogram(job.output_duration_stat_filename, 10, true, 120);
 		if (res) return res;
 	}
 	

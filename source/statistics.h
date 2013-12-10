@@ -1,5 +1,5 @@
-#ifndef _STATISTICS_H_
-#define _STATISTICS_H_
+#ifndef STATISTICS_H_INCLUDED
+#define STATISTICS_H_INCLUDED
 
 #include "base.h"
 #include "unknown-with-options.h"
@@ -7,13 +7,13 @@
 #include <string>
 
 
-struct strikeStruct {
+struct StrikeMark {
 	float t, E;
 };
 
-typedef std::vector<strikeStruct> st_vec;
+typedef std::vector<StrikeMark> st_vec;
 
-class strikesClass : public unknownWithOptions
+class DetectedStrikesContainer : public unknownWithOptions
 {
 private:
 	st_vec strikes;
@@ -23,8 +23,8 @@ public:
 	int print(string& filename);
 	int printHist(string& filename);
 	int addReport(string& filename);
-	strikesClass();
-	~strikesClass();
+	DetectedStrikesContainer();
+	~DetectedStrikesContainer();
 };
 
 #endif

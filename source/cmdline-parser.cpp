@@ -55,30 +55,13 @@ void jobList::printHelp()
 	printf("  --limits, -l, <left> <right>     - output only in limits\n");
 }
 
-/*
-bool parseTextParameter(char* longName, char* shortName, char* noValMsg, bool& flag, string& parameter, char** argv, int argc, int& testNum)
-{
-	if (strcmp(argv[testNum], longName)==0 || strcmp(argv[testNum], shortName)==0) {
-		if (argc == ++testNum) {
-			printf(noValMsg);
-			return -1;
-		}
-		flag=true;
-		parameter=argv[testNum];
-		testNum++;
-		return true;
-	}
-	return false;
-}*/
-
-
 int jobList::parse(int argc, char **argv)
 {
 	if (argc==1) {
 		printf("Arguments not specified!\n\n");
 		printHelp();
 		return -1;
-	}	
+	}
 	
 	int argNum=1;
 	string outputFile="", inputFile="";

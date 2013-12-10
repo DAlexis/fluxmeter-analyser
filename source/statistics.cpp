@@ -2,24 +2,24 @@
 #include <stdio.h>
 
 
-strikesClass::strikesClass():time_shift(0)
+DetectedStrikesContainer::DetectedStrikesContainer():time_shift(0)
 {
 	//printf ("Sclass constructor\n");
 }
 
-strikesClass::~strikesClass()
+DetectedStrikesContainer::~DetectedStrikesContainer()
 {
 	//printf ("Sclass destructor\n");
 }
 
-void strikesClass::add(float t, float E)
+void DetectedStrikesContainer::add(float t, float E)
 {
-	strikeStruct ss;
+	StrikeMark ss;
 	ss.t=t; ss.E=E;
 	strikes.push_back (ss);
 }
 
-int strikesClass::print(std::string& filename)
+int DetectedStrikesContainer::print(std::string& filename)
 {
 	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {
@@ -39,7 +39,7 @@ int strikesClass::print(std::string& filename)
 	return 0;
 }
 
-int strikesClass::printHist(string& filename)
+int DetectedStrikesContainer::printHist(string& filename)
 {
 	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {
@@ -75,7 +75,7 @@ int strikesClass::printHist(string& filename)
 	return 0;
 }
 
-int strikesClass::addReport(string& filename)
+int DetectedStrikesContainer::addReport(string& filename)
 {	
 	FILE *output=fopen(filename.c_str(), "w");
 	if (!output) {

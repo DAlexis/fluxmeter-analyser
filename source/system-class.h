@@ -13,7 +13,7 @@ private:
 	dataContainer data;
 	jobList job;
 	pattern patt;
-	strikesClass strikes;
+	DetectedStrikesContainer strikes;
 public:
 	int getCmdline(int argc, char** argv);
 	int input();

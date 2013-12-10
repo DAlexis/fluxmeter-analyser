@@ -220,12 +220,12 @@ bool pattern::simpleCheck(dataContainer& E, long long index, bool print)
 	return false;
 }
 
-int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method)
+int pattern::outStrikes(dataContainer& E, DetectedStrikesContainer& outp, char method)
 {
 	return outStrikes(E, outp, method, -1, -1);
 }
 
-int pattern::outStrikes(dataContainer& E, strikesClass& outp, char method, float tr_beg, float tr_end)
+int pattern::outStrikes(dataContainer& E, DetectedStrikesContainer& outp, char method, float tr_beg, float tr_end)
 {
 	long long i;
 	int j;

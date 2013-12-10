@@ -48,8 +48,8 @@ public:
 	int readSimplePattern(string filename);
 	pattern(): len(0), dt(0.05) {}
 	void setDt(float new_dt);
-	int outStrikes(dataContainer& E, strikesClass& outp, char method);
-	int outStrikes(dataContainer& E, strikesClass& outp, char method, float tr_beg, float tr_end);
+	int outStrikes(dataContainer& E, DetectedStrikesContainer& outp, char method);
+	int outStrikes(dataContainer& E, DetectedStrikesContainer& outp, char method, float tr_beg, float tr_end);
 };
 
 void truncData(dataContainer& E, int range);

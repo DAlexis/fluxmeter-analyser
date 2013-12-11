@@ -7,8 +7,6 @@ set format x "%H:%M"
 
 set xtics rotate by 90  offset 0,-1.5 out nomirror
 
-#set xrange [14400:100800]
-
 set xlabel "Interval between strikes, secs"
 set ylabel "Strikes count in 10 sec interval's gap"
 

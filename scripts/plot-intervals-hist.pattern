@@ -5,10 +5,9 @@ set xtics rotate by 90  offset 0,-1.5 out nomirror
 
 set xrange [0:120]
 
-set xlabel "Time, secs"
-set ylabel "Strikes per minute"
+set xlabel "Interval between strikes, sec"
+set ylabel "Strikes in 10 sec interval's gap"
 
-
-set title "Histogram for #DATETIME#"
+set title "Intervals histogram for #DATETIME#"
 
 plot "interval-hist.txt" using 1:2 with fs title "Strikes p. m."

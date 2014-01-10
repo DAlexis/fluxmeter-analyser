@@ -1,16 +1,19 @@
-set terminal png size 1149, 861
-set out "graphs/day-#FILENAME#-hist.png"
+set terminal postscript solid color eps enhanced "Arial,10"
+set encoding koi8r
+set out "graphs/day-#FILENAME#-hist.ps"
 
 set xdata time
 set timefmt "%s"
 set format x "%H:%M"
+set size ratio 0.35
 
-set xtics rotate by 90  offset 0,-1.5 out nomirror
+set xtics rotate by 90  offset 0,-2 out nomirror
 
-set xlabel "Strikes per minute"
-set ylabel "Time"
+set style line 1 lt rgb "black" lw 1
 
+set xlabel "Время" offset 0,-2
+set ylabel "Количество разрядов в минуту"
 
-set title "Histogram for #DATETIME#"
-
-plot "hist.txt" using 1:2 with boxes title "Strikes in 10 sec int. gap"
+#set title "Частота разрядов по данным #DATETIME#"
+set nokey
+plot "hist.txt" using 1:2 ls 1 with steps 

@@ -204,7 +204,7 @@ int dataContainer::readDAT(string& fileName, int ncols, int col)
 int dataContainer::readFresh(string& fileName, string& inpFmt)
 {
 	if (inpFmt=="dat") {
-		return readDAT(fileName, 2,2); /// @todo [Hi] number of columns and column to read from should be configurable!
+		return readDAT(fileName, 2,1); /// @todo [Hi] number of columns and column to read from should be configurable!
 	} else if (inpFmt=="efm") {
 		// Reading data in 00:00:00,+0.09,0-like format
 		return readEFM(fileName);

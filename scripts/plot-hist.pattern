@@ -7,10 +7,10 @@ set format x "%H:%M"
 
 set xtics rotate by 90  offset 0,-1.5 out nomirror
 
-set xlabel "Interval between strikes, secs"
-set ylabel "Strikes count in 10 sec interval's gap"
+set xlabel "Strikes per minute"
+set ylabel "Time"
 
 
-set title "Intervals histogram for #DATETIME#"
+set title "Histogram for #DATETIME#"
 
 plot "hist.txt" using 1:2 with boxes title "Strikes in 10 sec int. gap"

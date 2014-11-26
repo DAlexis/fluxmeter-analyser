@@ -4,6 +4,7 @@ set out "graphs/day-#FILENAME#-graph.png"
 set xdata time
 set timefmt "%s"
 set format x "%H:%M"
+set xrange ["#PLOTFROM#":"#PLOTTO#"]
 
 set xtics rotate by 90  offset 0,-1.5 out nomirror
 

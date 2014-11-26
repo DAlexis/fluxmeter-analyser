@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#echo "Usage: proceed-file <dir> <file-without-extension> <format>"
+#echo "Usage: proceed-file <dir> <file-without-extension> <format> <'limits'> <left> <right>"
 
 function checkExitCode 
 {
@@ -16,10 +16,15 @@ file=$2
 report=Report.fr
 faReport=report.txt
 
+leftLimitHours=0
+rightLimitHours=86400
+
 if [ "$4" == "limits" ];
 then
     limitsOption="-l $5 $6"
     echo "  i Enabling option $limitsOption"
+    leftLimitHours=$(($5*3600))
+    rightLimitHours=$(($6*3600))
 fi
 
 if [ "$3" == "dsf" ];
@@ -41,12 +46,12 @@ then
     rm -f $file.txt
     
     echo "  + Creating plain data..." | tee -a log.log
-    ./flux-analysis -f $filedat -F dat -t "DATA-plain.txt" $limitsOption -u 6 -o "DATA.bin" -r -0.005 -K 30 -z +4 | tee -a log.log
+    ./flux-analysis -f $filedat -F dat -t "DATA-plain.txt" $limitsOption -u 6 -o "DATA.bin" -r -0.005 -K 30 | tee -a log.log
 
     checkExitCode
     
     echo "  + Filtering and detecting..." | tee -a log.log
-    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -t "DATA-filtered.txt" -M "hist.txt" -D "interval-hist.txt" -K 340 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-myza.cfg" -s "DATA-strikes.txt" -t "DATA-filtered.txt" -M "hist.txt" -D "interval-hist.txt" -K 340 -R $faReport  $limitsOption | tee -a log.log
 
     checkExitCode
     
@@ -61,12 +66,12 @@ then
     checkExitCode
     
     echo "  + Creating plain data..." | tee -a log.log
-    ./flux-analysis -f $fileefm -F efm -t "DATA-plain.txt" $limitsOption -o "DATA.bin" -r 4 -z +4 -K 3
+    ./flux-analysis -f $fileefm -F efm -t "DATA-plain.txt" $limitsOption -o "DATA.bin" -r `cat renorm.txt` -K 3
     
     checkExitCode
     
     echo "  + Filtering and detecting..." | tee -a log.log
-    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -D "interval-hist.txt" -K 3 -z +4 -R $faReport  $limitsOption | tee -a log.log
+    ./flux-analysis -i DATA.bin -t DATA.txt -n 1.8 2 -S "config-iapras.cfg" -t "DATA-filtered.txt" -s "DATA-strikes.txt" -M "hist.txt" -D "interval-hist.txt" -K 3 -R $faReport  $limitsOption | tee -a log.log
     
     checkExitCode
 else
@@ -82,11 +87,11 @@ then
 fi
 
 echo "  + Plotting E(t) graph with gnuplot..." | tee -a log.log
-cat plot-graph.pattern | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+cat plot-graph.pattern | sed s/"#PLOTFROM#"/$leftLimitHours/ | sed s/"#PLOTTO#"/$rightLimitHours/ | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
 gnuplot plot-current.gp 2>&1 | tee -a log.log
 
 echo "  + Plotting histogram with gnuplot..." | tee -a log.log
-cat plot-hist.pattern | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
+cat plot-hist.pattern | sed s/"#PLOTFROM#"/$leftLimitHours/ | sed s/"#PLOTTO#"/$rightLimitHours/ | sed s/"#FILENAME#"/$file$fileNameInsertion/ | sed s/"#DATETIME#"/$file/ > plot-current.gp
 gnuplot plot-current.gp 2>&1 | tee -a log.log
 
 echo "  + Plotting intervals histogram with gnuplot..." | tee -a log.log

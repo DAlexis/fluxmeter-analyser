@@ -7,8 +7,8 @@ set format x "%H:%M"
 
 set xtics rotate by 90  offset 0,-1.5 out nomirror
 
-set xlabel "Strikes per minute"
-set ylabel "Time"
+set xlabel "Time"
+set ylabel "Strikes per minute"
 
 
 set title "Histogram for #DATETIME#"
